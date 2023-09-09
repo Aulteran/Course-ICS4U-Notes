@@ -25,14 +25,14 @@
 
 # print("bye bye :)")
 
-lent = input("enter length: ")
-widt = input("enter width: ")
+lent = int(input("enter length: "))
+widt = int(input("enter width: "))
 
-def area(len, wid):
-    area = len*wid
-    return area
+def area(len:int, wid:int):
+    a = len*wid
+    return a
 
 def volume(A):
-    return A*input("enter depth: ")
+    return A*int(input("enter depth: "))
 
-volume(area(lent,widt))
+print(volume(area(lent,widt)))
