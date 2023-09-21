@@ -29,6 +29,8 @@ for char in MESSAGE:
 
 # main interation loop
 for possible_shift in range(1, len(SYMBOLS)+1):
+    # if possible_shift != 55:
+    #     continue
     # shift message by possible_shift value
     modded_message_indexes = []
     for item_index in range(len(message_indexed)):
@@ -36,7 +38,7 @@ for possible_shift in range(1, len(SYMBOLS)+1):
         # bring out of range indexes within range
         if modded_message_indexes[item_index] > len(SYMBOLS)-1:
             excess = modded_message_indexes[item_index] - len(SYMBOLS)-1
-            modded_message_indexes[item_index] = excess-1
+            modded_message_indexes[item_index] = excess+1
 
     # make possible message
     decrypted_message = ''
@@ -44,5 +46,7 @@ for possible_shift in range(1, len(SYMBOLS)+1):
         decrypted_message += SYMBOLS[modded_char_index]
 
     # print possible message
-    print(f"Shift{confirmed_shift}: {decrypted_message}")
+    print(f"Shift{possible_shift}: {decrypted_message}")
     confirmed_shift += 1
+
+print("program complete")
