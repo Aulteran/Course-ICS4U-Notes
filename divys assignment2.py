@@ -6,7 +6,7 @@ while number < len(SYMBOLS):
     for letter in message:
         index = SYMBOLS.index(letter)
         if index+number>65:
-            remainder = index+number-65
+            remainder = index+number-66
             if remainder==0:
                 mystr+=SYMBOLS[0]
             else:      
