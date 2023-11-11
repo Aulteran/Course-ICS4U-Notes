@@ -63,38 +63,45 @@ lebron_data = (
     Lebron('2020-21',36,'LAL','NBA','PG',43,43,33.7,9.3,18.1,.513,2.3,6.4,.366,7.0,11.7,.594,.578,4.1,5.8,.701,0.6,7.3,7.9,7.8,1.0,0.6,3.8,1.6,25.0)
 )
 
-pprint (lebron_data)
-
 # Question 1
-pprint(list(filter(lambda season: season[9] > 28, lebron_data)))
+print("Which years did Lebron average more than 28 ppg")
+pprint(list(filter(lambda season: season[-1] > 28, lebron_data)))
 
 # Question 2
-pprint(list(filter(lambda season: season[11] > .500, lebron_data)))
+print("\n\nWhich years was Lebron’s field goal percentage over .500 ")
+pprint(list(filter(lambda season: season[10] > .500, lebron_data)))
 
 # Question 3
-pprint(list(filter(lambda season: season[2] == 'CLE' and season[21] > .720, lebron_data)))
+print("\n\nWhen Lebron played for Cleveland, what years was his free throw percentage (FT_per) over .720")
+pprint(list(filter(lambda season: season[2] == 'CLE' and season[-10] > .720, lebron_data)))
 
 # Question 4
-mia_fg_percentages = list(map(lambda season: season[9], filter(lambda season: season[2] == 'MIA', lebron_data)))
+print("\n\nWhen Lebron played for Miami (MIA) , what was his average field goal percentage (FG_per)")
+mia_fg_percentages = list(map(lambda season: season[10], filter(lambda season: season[2] == 'MIA', lebron_data)))
 pprint(mean(mia_fg_percentages))
 
 # Question 5
+print("\n\nWhat is the TOTAL number of games (G) Lebron has played in his career")
 total_games = reduce(lambda acc, season: acc + season[5], lebron_data, 0)
 print(total_games)
 
 # Question 6
+print("\n\nA regular season has 82 games – how many games did he miss each season? (season, number of games missed)")
 missed_games_per_season = list(map(lambda season: (season[0], 82 - season[5]), lebron_data))
 pprint(missed_games_per_season)
 
 # Question 7
+print("\n\nWhat percent of games did Lebron start in comparison to games played?")
 start_percentage = reduce(lambda acc, season: acc + season[6] / season[5], lebron_data, 0) / len(lebron_data) * 100
 print(f"LeBron started {start_percentage:.2f}% of the games.")
 
 # Question 8
+print("\n\nHow many years has Lebron played in the NBA?")
 years_played = len(set(map(lambda season: season[0][:4], lebron_data)))
 print(f"LeBron has played in the NBA for {years_played} years.")
 
 # Question 9
+print("\n\nWhich position (POS) was Lebron’s Assists per game average (AST) highest? (PG,SG,SF,PF)")
 positions = {'PG': [], 'SG': [], 'SF': [], 'PF': []}
 for season in lebron_data:
     positions[season[4]].append(season[24])
@@ -102,14 +109,17 @@ pprint(positions)
 
 # PLAYOFF vs. REG QUESTIONS
 # Question 1
+print("\n\nWhat is the total number of games (G) Lebron has played in the playoffs?")
 playoff_games = reduce(lambda acc, season: acc + season[5], filter(lambda season: season[3] == 'NBA', lebron_data), 0)
 print(f"LeBron has played {playoff_games} games in the playoffs.")
 
 # Question 2
+print("\n\nWhat is Lebron’s average FG attempts per game in the playoffs?")
 playoff_fg_attempts_per_game = reduce(lambda acc, season: acc + season[9] / season[5], filter(lambda season: season[3] == 'NBA', lebron_data), 0)
 print(f"LeBron's average FG attempts per game in the playoffs: {playoff_fg_attempts_per_game:.2f}")
 
 # Question 3
+print("\n\nIN THE SEASONS WHICH LEBRON MADE THE PLAYOFFS ONLY: was his average FG% higher in the regular season or the playoffs?")
 regular_season_fg_percentages = list(map(lambda season: season[9], filter(lambda season: season[3] == 'NBA', lebron_data)))
 playoff_fg_percentages = list(map(lambda season: season[9], filter(lambda season: season[3] == 'NBA', lebron_data)))
 if mean(regular_season_fg_percentages) > mean(playoff_fg_percentages):
@@ -118,10 +128,12 @@ else:
     print("LeBron's average FG% is higher in the playoffs.")
 
 # Question 4
+print("\n\nIN THE SEASONS WHICH LEBRON MADE THE PLAYOFFS ONLY: create a new data set comparing minutes played in regular season vs. playoffs (per season)")
 minutes_comparison = list(map(lambda season: (season[0], season[7], season[25]), filter(lambda season: season[3] == 'NBA', lebron_data)))
 pprint(minutes_comparison)
 
 # Question 5
+print("\n\nIN THE SEASONS WHICH LEBRON MADE THE PLAYOFFS ONLY: what season was his FG% above .500 in BOTH the regular season AND playoffs.")
 fg_above_500_seasons = list(map(lambda season: season[0], filter(lambda season: season[9] > .500 and season[21] > .500, lebron_data)))
 pprint(fg_above_500_seasons)
 
