@@ -122,13 +122,22 @@ pprint(positions)
 # PLAYOFF vs. REG QUESTIONS
 
 PLAYOFF_DATA_FILEPATH = "Assignment4_Playoff_Data.csv"
+# playoff data formatted as such:
+# ['Season,Age,Tm,Lg,Pos,G,GS,MP,FG,FGA,FG%,3P,3PA,3P%,2P,2PA,2P%,eFG%,FT,FTA,FT%,ORB,DRB,TRB,AST,STL,BLK,TOV,PF,PTS']
 with open(PLAYOFF_DATA_FILEPATH, 'r') as opened_playoff_data:
     raw_csv_playoff_data = (csv.reader(opened_playoff_data))
     playoff_data = list(raw_csv_playoff_data)
     # should i convert csv list data into Lebron collection?
+    # idk i'll do it anyways just in case
+    lebron_playoff_data = ()
+    for playoff in playoff_data:
+        # get rid of headers from csv
+        if playoff[0][0] != 2: # if season val doesnt start with 2
+            continue
+            # need to finish converting to collection
 
 print("\n\nPLAYOFF DATA")
-pprint(playoff_data)
+print(playoff_data)
 
 # Question 1
 print("\n\nWhat is the total number of games (G) Lebron has played in the playoffs?")
