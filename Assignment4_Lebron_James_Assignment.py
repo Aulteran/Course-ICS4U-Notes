@@ -156,7 +156,6 @@ print(f"Lebron's average FG attempts per game in the playoffs is {average_fg_att
 
 # Question 3
 print("\n\nQuestion 3: IN THE SEASONS WHICH LEBRON MADE THE PLAYOFFS ONLY: was his average FG% higher in the regular season or the playoffs?")
-# Assuming regular season data is in the 'lebron_data' tuple
 regular_season_fg_percentages = [float(player.FG_per) for player in lebron_data]
 playoff_fg_percentages = [float(player.FG_per) for player in playoff_data]
 
@@ -167,7 +166,6 @@ else:
 
 # Question 4
 print("\n\nQuestion 4: IN THE SEASONS WHICH LEBRON MADE THE PLAYOFFS ONLY: create a new data set comparing minutes played in the regular season vs. playoffs (per season)")
-# Assuming regular season data is in the 'lebron_data' tuple
 minutes_comparison_data = [
     {'Season': player_season.Season, 'Regular Season MP': player_season.MP, 'Playoff MP': playoff_player.MP}
     for player_season, playoff_player in zip(lebron_data, playoff_data)
@@ -177,7 +175,6 @@ pprint(minutes_comparison_data)
 
 # Question 5
 print("\n\nQuestion 5: IN THE SEASONS WHICH LEBRON MADE THE PLAYOFFS ONLY: what season was his FG% above .500 in BOTH the regular season AND playoffs.")
-# Assuming regular season data is in the 'lebron_data' tuple
 seasons_fg_above_500_both = [player.Season for player, playoff_player in zip(lebron_data, playoff_data) if float(player.FG_per) > 0.5 and float(playoff_player.FG_per) > 0.5]
 print(f"In the seasons Lebron made the playoffs, his FG% was above .500 in both the regular season and playoffs in the following seasons: {', '.join(seasons_fg_above_500_both)}")
 
