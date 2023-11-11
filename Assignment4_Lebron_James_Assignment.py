@@ -124,3 +124,7 @@ pprint(minutes_comparison)
 # Question 5
 fg_above_500_seasons = list(map(lambda season: season[0], filter(lambda season: season[9] > .500 and season[21] > .500, lebron_data)))
 pprint(fg_above_500_seasons)
+
+# even though it looks bad apparently im using pprint right?
+
+print("pls give me 100 Mr.P")
