@@ -68,7 +68,7 @@ print("Which years did Lebron average more than 28 ppg")
 pprint(list(filter(lambda season: season[-1] > 28, lebron_data)))
 
 # Question 2
-print("\n\nWhich years was Lebron’s field goal percentage over .500 ")
+print("\n\nWhich years was Lebron's field goal percentage over .500 ")
 pprint(list(filter(lambda season: season[10] > .500, lebron_data)))
 
 # Question 3
@@ -86,13 +86,15 @@ total_games = reduce(lambda acc, season: acc + season[5], lebron_data, 0)
 print(total_games)
 
 # Question 6
-print("\n\nA regular season has 82 games – how many games did he miss each season? (season, number of games missed)")
+print("\n\nA regular season has 82 games - how many games did he miss each season? (season, number of games missed)")
 missed_games_per_season = list(map(lambda season: (season[0], 82 - season[5]), lebron_data))
 pprint(missed_games_per_season)
 
 # Question 7
 print("\n\nWhat percent of games did Lebron start in comparison to games played?")
-start_percentage = reduce(lambda acc, season: acc + season[6] / season[5], lebron_data, 0) / len(lebron_data) * 100
+total_games_started = reduce(lambda acc, season: acc + season[6], lebron_data, 0)
+start_percentage = total_games_started/total_games*100
+# can also use: reduce(lambda acc, season: acc + season[6] / season[5], lebron_data, 0) / len(lebron_data) * 100
 print(f"LeBron started {start_percentage:.2f}% of the games.")
 
 # Question 8
@@ -101,10 +103,19 @@ years_played = len(set(map(lambda season: season[0][:4], lebron_data)))
 print(f"LeBron has played in the NBA for {years_played} years.")
 
 # Question 9
-print("\n\nWhich position (POS) was Lebron’s Assists per game average (AST) highest? (PG,SG,SF,PF)")
+print("\n\nWhich position (POS) was Lebron's Assists per game average (AST) highest? (PG,SG,SF,PF)")
 positions = {'PG': [], 'SG': [], 'SF': [], 'PF': []}
 for season in lebron_data:
-    positions[season[4]].append(season[24])
+    positions[season[4]].append(season[-6])
+# i wrote this at 2am ik i couldve done this easier
+max_pos = 'PG'
+for position in positions:
+    pos_val = positions[position]
+    if pos_val > positions[max_pos]:
+        for key in positions.keys():
+            if positions[key] == position:
+                max_pos = key
+print(f"{max_pos} has highest ASTz")
 pprint(positions)
 
 # PLAYOFF vs. REG QUESTIONS
@@ -114,7 +125,7 @@ playoff_games = reduce(lambda acc, season: acc + season[5], filter(lambda season
 print(f"LeBron has played {playoff_games} games in the playoffs.")
 
 # Question 2
-print("\n\nWhat is Lebron’s average FG attempts per game in the playoffs?")
+print("\n\nWhat is Lebron's average FG attempts per game in the playoffs?")
 playoff_fg_attempts_per_game = reduce(lambda acc, season: acc + season[9] / season[5], filter(lambda season: season[3] == 'NBA', lebron_data), 0)
 print(f"LeBron's average FG attempts per game in the playoffs: {playoff_fg_attempts_per_game:.2f}")
 
