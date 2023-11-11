@@ -65,7 +65,7 @@ lebron_data = (
 )
 
 # Question 1
-print("Which years did Lebron average more than 28 ppg")
+print("\n\nWhich years did Lebron average more than 28 ppg")
 pprint(list(filter(lambda season: season[-1] > 28, lebron_data)))
 
 # Question 2
@@ -126,23 +126,27 @@ PLAYOFF_DATA_FILEPATH = "Assignment4_Playoff_Data.csv"
 # ['Season,Age,Tm,Lg,Pos,G,GS,MP,FG,FGA,FG%,3P,3PA,3P%,2P,2PA,2P%,eFG%,FT,FTA,FT%,ORB,DRB,TRB,AST,STL,BLK,TOV,PF,PTS']
 with open(PLAYOFF_DATA_FILEPATH, 'r') as opened_playoff_data:
     raw_csv_playoff_data = (csv.reader(opened_playoff_data))
-    playoff_data = list(raw_csv_playoff_data)
-    # should i convert csv list data into Lebron collection?
+    next(raw_csv_playoff_data) #skip header line
+    # should i convert csv list data into Lebron collection
     # idk i'll do it anyways just in case
-    lebron_playoff_data = ()
-    for playoff in playoff_data:
-        # get rid of headers from csv
-        if playoff[0][0] != 2: # if season val doesnt start with 2
-            continue
-            # need to finish converting to collection
+    playoff_data = [Lebron(*row) for row in raw_csv_playoff_data]
+    # failed 2AM attempt:
+    # playoff_data = list(raw_csv_playoff_data)
+    # lebron_playoff_data = ()
+    # for playoff in playoff_data:
+    #     # get rid of headers from csv
+    #     if playoff[0][0] != '2': # if season val doesnt start with 2
+    #         continue # next iteration of loop
+    #     lebron_playoff_data_new = lebron_playoff_data + Lebron(tuple(playoff))
+    # lebron_playoff_data = lebron_playoff_data_new
 
 print("\n\nPLAYOFF DATA")
 print(playoff_data)
 
 # Question 1
 print("\n\nWhat is the total number of games (G) Lebron has played in the playoffs?")
-playoff_games = reduce(lambda acc, season: acc + season[5], filter(lambda season: season[3] == 'NBA', lebron_data), 0)
-print(f"LeBron has played {playoff_games} games in the playoffs.")
+total_playoff_games = reduce(lambda acc, season: acc + season[5], playoff_data, 0)
+print(total_playoff_games)
 
 # Question 2
 print("\n\nWhat is Lebron's average FG attempts per game in the playoffs?")
