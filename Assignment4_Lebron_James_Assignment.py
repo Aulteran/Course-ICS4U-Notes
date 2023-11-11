@@ -35,6 +35,7 @@ Built on: Python 3.10.11
 # the data structures grouped by POS – have a final statement after stating – Lebron’s assists per game average was highest as a POS
 
 import collections
+import csv
 from functools import reduce
 from pprint import pprint
 from statistics import mean
@@ -115,10 +116,20 @@ for position in positions:
         for key in positions.keys():
             if positions[key] == position:
                 max_pos = key
-print(f"{max_pos} has highest ASTz")
+print(f"{max_pos} has highest AST")
 pprint(positions)
 
 # PLAYOFF vs. REG QUESTIONS
+
+PLAYOFF_DATA_FILEPATH = "Assignment4_Playoff_Data.csv"
+with open(PLAYOFF_DATA_FILEPATH, 'r') as opened_playoff_data:
+    raw_csv_playoff_data = (csv.reader(opened_playoff_data))
+    playoff_data = list(raw_csv_playoff_data)
+    # should i convert csv list data into Lebron collection?
+
+print("\n\nPLAYOFF DATA")
+pprint(playoff_data)
+
 # Question 1
 print("\n\nWhat is the total number of games (G) Lebron has played in the playoffs?")
 playoff_games = reduce(lambda acc, season: acc + season[5], filter(lambda season: season[3] == 'NBA', lebron_data), 0)
