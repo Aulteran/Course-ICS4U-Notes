@@ -13,7 +13,19 @@ Built on: Python 3.10.11
     # have volume levels from 1 to 5
     # must be able to check all of this information using a
     # have a mute button (independant of volume level)
-    # NOTE: make sure to do some planning!!! HINT: ask yourself 
-    # what PROPERTIES the speaker will have, and what BEHAVIOURS it should have.
+# NOTE: make sure to do some planning!!! HINT: ask yourself 
+# what PROPERTIES the speaker will have, and what BEHAVIOURS it should have.
 
 # There is a set of test code that is attached to this git. You will run the test code on your class
+
+class Speaker():
+    def __init__(self):
+        self.power = False #True is on and False is off
+        self.volume = 50 # can be between 0 and 100
+        self.mute = False
+        self.status = f'SPEAKER STATUS:\nPower On:{self.power}\nMuted:{self.mute}\nVolume:{self.volume}'
+    
+    def check_status(self):
+        print(self.status)
+    
+    
