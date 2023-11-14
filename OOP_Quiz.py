@@ -38,11 +38,13 @@ class Speaker():
             print("The speaker has turned on")
     
     def volume_up(self):
-        self.volume+=1
+        if self.volume < 5:
+            self.volume+=1
         print(f"now set to volume [{self.volume}]")
 
     def volume_down(self):
-        self.volume-=1
+        if self.volume > 1:
+            self.volume-=1
         print(f"now set to volume [{self.volume}]")
     
     def toggle_mute(self):
