@@ -19,13 +19,44 @@ Built on: Python 3.10.11
 # There is a set of test code that is attached to this git. You will run the test code on your class
 
 class Speaker():
-    def __init__(self):
+    def __init__(self, volume, input):
         self.power = False #True is on and False is off
-        self.volume = 50 # can be between 0 and 100
-        self.mute = False
-        self.status = f'SPEAKER STATUS:\nPower On:{self.power}\nMuted:{self.mute}\nVolume:{self.volume}'
+        self.volume = volume # can be between 1 and 5
+        self.muted = False
+        self.input = input # can be either 1 or 2
     
-    def check_status(self):
-        print(self.status)
+    def show(self):
+        status = f'SPEAKER STATUS:\nPower On:{self.power}\nMuted:{self.muted}\nVolume:{self.volume}'
+        print(status)
     
+    def toggle_power(self):
+        if self.power == True:
+            self.power = False
+            print("speaker turned off.")
+        else:
+            self.power = True
+            print("The speaker has turned on")
     
+    def volume_up(self):
+        self.volume+=1
+        print(f"now set to volume [{self.volume}]")
+
+    def volume_down(self):
+        self.volume-=1
+        print(f"now set to volume [{self.volume}]")
+    
+    def toggle_mute(self):
+        if self.muted == True:
+            self.muted = False
+            print("speaker unmuted")
+        else:
+            self.muted = True
+            print("speaker muted")
+    
+    def toggle_input(self):
+        if self.input == 1:
+            self.input = 2
+            print("input now [2]")
+        else:
+            self.input = 1
+            print("input now [1]")
