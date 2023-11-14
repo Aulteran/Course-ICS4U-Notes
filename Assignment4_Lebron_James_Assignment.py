@@ -122,7 +122,7 @@ pprint(positions)
 
 # PLAYOFF vs. REG QUESTIONS
 
-PLAYOFF_DATA_FILEPATH = "Assignment4_Playoff_Data.csv"
+PLAYOFF_DATA_FILEPATH = "Databases and CSVs/Assignment4_Playoff_Data.csv"
 # playoff data formatted as such:
 # ['Season,Age,Tm,Lg,Pos,G,GS,MP,FG,FGA,FG%,3P,3PA,3P%,2P,2PA,2P%,eFG%,FT,FTA,FT%,ORB,DRB,TRB,AST,STL,BLK,TOV,PF,PTS']
 with open(PLAYOFF_DATA_FILEPATH, 'r') as opened_playoff_data:
