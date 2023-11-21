@@ -65,12 +65,6 @@ Channels Available: {', '.join([str(x) for x in self.channelList])}
             print(f"Cannot go higher than Channel {max(self.channelList)}")
             return
         self.channelIndex += 1
-        # currentChannelIndex = self.channelList.index(self.channel)
-        # nextChannelIndex = currentChannelIndex + 1
-        # if nextChannelIndex >= len(self.channelList):
-        #     nextChannelIndex = 0
-        # self.channel = nextChannelIndex
-        # self.channelIndex = self.channelList.index(self.channel)
         print(f'TV now on channel {self.channelList[self.channelIndex]}')
 
     def channelDown(self):
@@ -78,12 +72,6 @@ Channels Available: {', '.join([str(x) for x in self.channelList])}
             print(f"Cannot go lower than Channel {min(self.channelList)}")
             return
         self.channelIndex -= 1
-        # currentChannelIndex = self.channelList.index(self.channel)
-        # previousChannelIndex = currentChannelIndex - 1
-        # if previousChannelIndex < 0:
-        #     previousChannelIndex = -1
-        # self.channel = self.channelList[previousChannelIndex]
-        # self.channelIndex = self.channelList.index(self.channel)
         print(f'TV now on channel {self.channelList[self.channelIndex]}')
 
     def volumeUp(self):
