@@ -35,7 +35,7 @@ for possible_shift in range(1, len(SYMBOLS)+1):
     modded_message_indexes = []
     for item_index in range(len(message_indexed)):
         modded_message_indexes.append(message_indexed[item_index] + possible_shift)
-        # bring out of range indexes within range
+        # bring out of range indexes within range 
         if modded_message_indexes[item_index] > len(SYMBOLS)-1:
             excess = modded_message_indexes[item_index] - len(SYMBOLS)-1
             modded_message_indexes[item_index] = excess+1
