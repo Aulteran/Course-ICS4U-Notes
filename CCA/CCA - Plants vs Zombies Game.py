@@ -62,32 +62,42 @@ class Player():
         self.plants = []
 
         # create starting plant row
-        spawnpoint = PLANT_SPAWNPOINTS[self.num_plants]
+        spawnpoint = PLANT_SPAWNPOINTS[self.num_plants] #coords index will be numplants-1
         self.plants.append(Peashooter(spawnpoint[0], spawnpoint[1], self))
         self.num_plants += 1
         print("Created initial player plant row.")
     
     def add_plant(self, spawn_coords):
+        # create peashooter instance
         self.plants.append(Peashooter(spawn_coords[0], spawn_coords[1], self))
         self.num_plants += 1
         print(f"Created Plant ID {self.num_plants}")
+        # create enemy zombie
+        active_plant:Peashooter = self.plants[self.num_plants-1]
+        active_plant.add_enem_zombie()
+
 
 # Peashooter class
 class Peashooter():
-    def __init__(self, x, y, player:Player, image_path = "CCA\\assets\\images\\plants\\peashooter.png"):
+    def __init__(self, x, y, player:Player, plantID = 0, image_path = "CCA\\assets\\images\\plants\\peashooter.png"):
         self.x = x
         self.y = y
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (60,100))
-        self.enemies:Zombie
         self.enemies = []
         self.enemy_spawnpoint = ZOMBIE_SPAWNPOINTS[player.num_plants] # tuple (x, y)
+        self.plantID = plantID
+        if plantID == 0:
+            self.plantID = player.num_plants
 
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
     
-    def add_enem_zombie(self):
-        self.enemies.append(Zombie(self.enemy_spawnpoint[0], self.enemy_spawnpoint[1], random.randint(10, 30)))
+    def add_enem_zombie(self, spawnpoint=0):
+        if spawnpoint == 0:
+            spawnpoint = self.enemy_spawnpoint
+        self.enemies.append(Zombie(spawnpoint[0], spawnpoint[1], random.randint(10, 30)))
+        print(f"Created Zombie {self.enemies[-1]}")
         
 
 # zombie class
@@ -128,14 +138,22 @@ main_player = Player()
 
 dropshadow = DropShadow(30,30)
 
-async def gen_rand_zombies(player:Player):
-    for plant in player.plants:
-        plant:Zombie
-        plant.add_enem_zombie()
-
 main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
 
-x=1
+cooldown = False
+async def gen_rand_zombies(player:Player):
+    # this generator doesnt work, blackscreens the whole program
+    # will use diff method
+    global cooldown
+    if cooldown:    
+        for plant in player.plants:
+            print("found player")
+            plant.add_enem_zombie()
+    cooldown = True
+    await asyncio.sleep(10)
+    cooldown = False # need to fix
+
+# asyncio.run(gen_rand_zombies(main_player))
 
 # Main game loop
 while True:
@@ -150,24 +168,31 @@ while True:
     # add "dropshadow" to increase sprite visibility
     dropshadow.draw()
 
+    # check zombie healths
+
     zombies = []
     zombie:Zombie
-
-    # Draw the Peashooter
+ 
+    # plant management loop
     for plant in main_player.plants:
-        print(f"Found plant {plant}")
-        plant.draw()
-        print("Drew plant")
-        enemy:Zombie
-        for enemy in plant.enemies:
-            print(f"Found Zombie {enemy}")
-            zombies.append(enemy)
-    while x==1:
-        print(zombies)
-        x=0
+        '''loop to manage all attributes within peashooter'''
+        plant:Peashooter
 
-    for zombie in zombies:
-        zombie.update()
-        zombie.draw()
+        # enemy management loop
+        for enemy in plant.enemies:
+            enemy:Zombie
+
+            # if zombie health <0, remove zomb from sys.mem
+            if enemy.hp <= 0:
+                del enemy
+                # create replacement zombie
+                plant.add_enem_zombie(ZOMBIE_SPAWNPOINTS[plant.plantID])
+            
+            # update and draw zombies
+            asyncio.run(enemy.update())
+            enemy.draw()
+
+        # draw plants
+        plant.draw()
 
     pygame.display.flip() # pygame window mainloop
