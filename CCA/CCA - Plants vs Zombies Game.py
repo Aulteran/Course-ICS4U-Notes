@@ -48,7 +48,8 @@ BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 HOVER_GRAY = (150, 150, 150)
 
-PLANT_SPAWNPOINTS = []
+PLANT_SPAWNPOINTS = [(60, 240), (60, 180), (60, 320)]
+ZOMBIE_SPAWNPOINTS = [(720, 240), (720, 180), (720, 320)]
 
 # # Grid properties
 # grid_size = min(WIDTH, HEIGHT) // 8  # Size of each cell
@@ -60,9 +61,23 @@ PLANT_SPAWNPOINTS = []
 
 # player
 class Player():
-    def __init__(self, start_money=500, start_plants=1):
+    def __init__(self, username='player', start_money=500, start_plants=1):
+        self.name = username
         self.wallet = start_money
-        self.plants = start_plants
+        self.num_plants = 0 # max 5 plants
+        self.plants = []
+
+        # create starting plant row
+        spawnpoint = PLANT_SPAWNPOINTS[self.num_plants]
+        self.plants.append(Peashooter(spawnpoint[0], spawnpoint[1]))
+        self.num_plants += 1
+        print("Created initial player plant row.")
+    
+    def add_plant(self, spawn_coords):
+        self.plants.append(Peashooter(spawn_coords[0], spawn_coords[1]))
+        self.num_plants += 1
+        print(f"Created Plant ID {self.num_plants}")
+
 
 
 # Peashooter class
@@ -72,9 +87,14 @@ class Peashooter():
         self.y = y
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (60,100))
+        self.enemies:Zombie = []
 
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
+    
+    def add_enem_zombie(self, player:Player):
+        
+        
 
 # zombie class
 class Zombie(pygame.sprite.Sprite):
@@ -102,25 +122,17 @@ class DropShadow():
         self.x = x
         self.y = y
         self.img = pygame.image.load("CCA\\assets\\images\\black.jpg")
-        self.img = pygame.transform.scale(self.img, (750,500))
+        self.img = pygame.transform.scale(self.img, (750,525))
         self.img.set_alpha(100)
     
     def draw(self):
         screen.blit(self.img, (self.x, self.y))
 
-
-# Create a Peashooter instance
-plants = [
-    Peashooter(60, 30),
-    Peashooter(60, 100),
-    Peashooter(60, 170)
-]
-
-zombies = [
-    Zombie(500, 110, 10)
-]
+main_player = Player()
 
 dropshadow = DropShadow(30,30)
+
+zombie = Zombie(ZOMBIE_SPAWNPOINTS[0][0], ZOMBIE_SPAWNPOINTS[0][1], 10)
 
 # Main game loop
 while True:
@@ -129,24 +141,18 @@ while True:
             pygame.quit()
             sys.exit()
 
-    # # Get mouse position
-    # mouse_x, mouse_y = pygame.mouse.get_pos()
-    # hover_row = mouse_y // grid_size
-    # hover_col = mouse_x // grid_size
-
-    # Draw the grid
-    # screen.fill(AMBIENT_PVZ_BG_COLOR)
+    # add background image
     screen.blit(bg_lawn_image, (0,0))
     
+    # add "dropshadow" to increase sprite visibility
     dropshadow.draw()
 
     # Draw the Peashooter
-    for peashooter in plants:
-        peashooter.draw()
+    for plant in main_player.plants:
+        plant.draw()
 
-    for zombie in zombies:
-        asyncio.run(zombie.update())
-        zombie.draw()
+    asyncio.run(zombie.update())
+    zombie.draw()
 
     # for row in range(rows):
     #     for col in range(cols):
