@@ -1,14 +1,14 @@
 '''
 Author: Aadil Hussain
-Built on: Python 3.11.7
+Built on: Python 3.12.1
 '''
 
 import pygame, random, asyncio
+import sys, csv
 from pygame import Surface
-import sys
-import csv
+from tkinter import *
 
-# CULMINATING ASSIGNMENT
+# CULMINATING ASSIGNMENT INSTRUCTIONS
 # Incorportate all the techniques learned in the course over the semester.
 # You will be creating a computer game level using PyGame. You must:
 # -	Include an OOP approach
@@ -39,8 +39,6 @@ WHITE = (255, 255, 255)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Plants vs Zombies")
 
-bg_lawn_image = pygame.image.load('CCA\\assets\\images\\Lawn.png')
-
 # Define colors
 AMBIENT_PVZ_BG_COLOR = (127, 202, 159)
 WHITE = (255, 255, 255)
@@ -48,16 +46,12 @@ BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 HOVER_GRAY = (150, 150, 150)
 
+# predefined default possible spawnpoints for zombies
 PLANT_SPAWNPOINTS = [(60, 240), (60, 180), (60, 320)]
 ZOMBIE_SPAWNPOINTS = [(720, 240), (720, 180), (720, 320)]
 
-# # Grid properties
-# grid_size = min(WIDTH, HEIGHT) // 8  # Size of each cell
-# rows = 6
-# cols = 8
-
-# # Create a 2D array to represent the grid
-# grid = [[0 for _ in range(cols)] for _ in range(rows)]
+# background Plants vs Zombies Img filepath loaded in pygame
+PVZ_LAWN_IMG = pygame.image.load('CCA\\assets\\images\\Lawn.png')
 
 # player
 class Player():
@@ -69,31 +63,31 @@ class Player():
 
         # create starting plant row
         spawnpoint = PLANT_SPAWNPOINTS[self.num_plants]
-        self.plants.append(Peashooter(spawnpoint[0], spawnpoint[1]))
+        self.plants.append(Peashooter(spawnpoint[0], spawnpoint[1], self))
         self.num_plants += 1
         print("Created initial player plant row.")
     
     def add_plant(self, spawn_coords):
-        self.plants.append(Peashooter(spawn_coords[0], spawn_coords[1]))
+        self.plants.append(Peashooter(spawn_coords[0], spawn_coords[1], self))
         self.num_plants += 1
         print(f"Created Plant ID {self.num_plants}")
 
-
-
 # Peashooter class
 class Peashooter():
-    def __init__(self, x, y, image_path = "CCA\\assets\\images\\plants\\peashooter.png"):
+    def __init__(self, x, y, player:Player, image_path = "CCA\\assets\\images\\plants\\peashooter.png"):
         self.x = x
         self.y = y
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (60,100))
-        self.enemies:Zombie = []
+        self.enemies:Zombie
+        self.enemies = []
+        self.enemy_spawnpoint = ZOMBIE_SPAWNPOINTS[player.num_plants] # tuple (x, y)
 
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
     
-    def add_enem_zombie(self, player:Player):
-        
+    def add_enem_zombie(self):
+        self.enemies.append(Zombie(self.enemy_spawnpoint[0], self.enemy_spawnpoint[1], random.randint(10, 30)))
         
 
 # zombie class
@@ -117,6 +111,7 @@ class Zombie(pygame.sprite.Sprite):
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
 
+# dropshadow to increase sprite visibility
 class DropShadow():
     def __init__(self, x, y):
         self.x = x
@@ -128,11 +123,19 @@ class DropShadow():
     def draw(self):
         screen.blit(self.img, (self.x, self.y))
 
+# build player object
 main_player = Player()
 
 dropshadow = DropShadow(30,30)
 
-zombie = Zombie(ZOMBIE_SPAWNPOINTS[0][0], ZOMBIE_SPAWNPOINTS[0][1], 10)
+async def gen_rand_zombies(player:Player):
+    for plant in player.plants:
+        plant:Zombie
+        plant.add_enem_zombie()
+
+main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
+
+x=1
 
 # Main game loop
 while True:
@@ -142,28 +145,29 @@ while True:
             sys.exit()
 
     # add background image
-    screen.blit(bg_lawn_image, (0,0))
+    screen.blit(PVZ_LAWN_IMG, (0,0))
     
     # add "dropshadow" to increase sprite visibility
     dropshadow.draw()
 
+    zombies = []
+    zombie:Zombie
+
     # Draw the Peashooter
     for plant in main_player.plants:
+        print(f"Found plant {plant}")
         plant.draw()
+        print("Drew plant")
+        enemy:Zombie
+        for enemy in plant.enemies:
+            print(f"Found Zombie {enemy}")
+            zombies.append(enemy)
+    while x==1:
+        print(zombies)
+        x=0
 
-    asyncio.run(zombie.update())
-    zombie.draw()
+    for zombie in zombies:
+        zombie.update()
+        zombie.draw()
 
-    # for row in range(rows):
-    #     for col in range(cols):
-    #         rect = pygame.Rect(col * grid_size, row * grid_size, grid_size, grid_size)
-
-    #         # Check if the mouse is hovering over the cell
-    #         if hover_row == row and hover_col == col:
-    #             pygame.draw.rect(screen, HOVER_GRAY, rect)
-    #         elif grid[row][col] == 0:
-    #             pygame.draw.rect(screen, GRAY, rect)
-    #         else:
-    #             pygame.draw.rect(screen, BLACK, rect)
-
-    pygame.display.flip()
+    pygame.display.flip() # pygame window mainloop
