@@ -60,12 +60,6 @@ class Player():
         self.wallet = start_money
         self.num_plants = 0 # max 5 plants
         self.plants = []
-
-        # create starting plant row
-        spawnpoint = PLANT_SPAWNPOINTS[self.num_plants] #coords index will be numplants-1
-        self.plants.append(Peashooter(spawnpoint[0], spawnpoint[1], self))
-        self.num_plants += 1
-        print("Created initial player plant row.")
     
     def add_plant(self, spawn_coords):
         # create peashooter instance
@@ -89,16 +83,44 @@ class Peashooter():
         self.plantID = plantID
         if plantID == 0:
             self.plantID = player.num_plants
+        self.shooting = False
+        self.shots = []
 
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
     
     def add_enem_zombie(self, spawnpoint=0):
+        self.shooting = False
         if spawnpoint == 0:
             spawnpoint = self.enemy_spawnpoint
         self.enemies.append(Zombie(spawnpoint[0], spawnpoint[1], random.randint(10, 30)))
         print(f"Created Zombie {self.enemies[-1]}")
-        
+        self.shooting = True
+    
+    def shoot(self, spawnpoint=0):
+        if spawnpoint==0:
+            spawnpoint = (self.x, self.y)
+        self.shots.append(Pea(spawnpoint[0], spawnpoint[1], 5))
+        print(f"Shot at zombie on row {self.plantID}")
+
+class Pea(pygame.sprite.Sprite):
+    def __init__(self, x, y, projectilespeed=1, image_path = "CCA\\assets\\images\\projectiles\\pea.png"):
+        self.x = x+35
+        self.y = y+45
+        self.speed = projectilespeed
+        self.image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(self.image, (30,30))
+        self.fresh_shot = True # on first update of shot
+    
+    async def update(self):
+        if self.fresh_shot:
+            await asyncio.sleep(2)
+            self.fresh_shot = False
+        await asyncio.sleep(0.005)
+        self.x += self.speed
+    
+    def draw(self):
+        screen.blit(self.image, (self.x, self.y))
 
 # zombie class
 class Zombie(pygame.sprite.Sprite):
@@ -133,12 +155,11 @@ class DropShadow():
     def draw(self):
         screen.blit(self.img, (self.x, self.y))
 
-# build player object
-main_player = Player()
+# build init player object
+main_player = Player("Aadil")
+main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
 
 dropshadow = DropShadow(30,30)
-
-main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
 
 cooldown = False
 async def gen_rand_zombies(player:Player):
@@ -191,6 +212,18 @@ while True:
             # update and draw zombies
             asyncio.run(enemy.update())
             enemy.draw()
+
+        # if plant is supposed to be shooting, shoot
+        if plant.shooting:
+            plant.shoot()
+        plant.shooting = False
+        
+        # update and draw shots
+        for shot in plant.shots:
+            shot:Pea
+            asyncio.run(shot.update())
+            shot.draw()
+            
 
         # draw plants
         plant.draw()
