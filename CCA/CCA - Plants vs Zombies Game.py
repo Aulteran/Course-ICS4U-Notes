@@ -3,7 +3,8 @@ Author: Aadil Hussain
 Built on: Python 3.11.7
 '''
 
-import pygame, random
+import pygame, random, asyncio
+from pygame import Surface
 import sys
 import csv
 
@@ -27,7 +28,7 @@ import csv
 pygame.init()
 
 # Constants
-WIDTH, HEIGHT = 800, 600
+WIDTH, HEIGHT = 600, 325
 FPS = 60
 
 # Colors
@@ -37,163 +38,97 @@ WHITE = (255, 255, 255)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Plants vs Zombies")
 
+# Define colors
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+GRAY = (200, 200, 200)
+HOVER_GRAY = (150, 150, 150)
+
+# # Grid properties
+# grid_size = min(WIDTH, HEIGHT) // 8  # Size of each cell
+# rows = 6
+# cols = 8
+
+# # Create a 2D array to represent the grid
+# grid = [[0 for _ in range(cols)] for _ in range(rows)]
+
 # Peashooter class
 class Peashooter():
-    def __init__(self, type, pos, max_health=100):
-        self.face_img = pygame.image.load("CCA\\assets\images\plants\peashooter.png").convert()
-        self.max_health = max_health
-        self.health = max_health
+    def __init__(self, x, y, image_path = "CCA\\assets\images\plants\peashooter.png"):
+        self.x = x
+        self.y = y
+        self.image = pygame.image.load(image_path)
+        self.image = pygame.transform.scale(self.image, (60,100))
 
-        self.damage_cooldown = 30
+    def draw(self):
+        screen.blit(self.image, (self.x, self.y))
 
-    def rect(self):
-        return pygame.Rect((self.pos[0]*24) + 56, (self.pos[1]*24) + 50, 16, 16)
+# zombie class
+class Zombie(pygame.sprite.Sprite):
+    def __init__(self, x, y, speed, image_path = "CCA\\assets\images\zombies\normal.png"):
+        pygame.sprite.Sprite.__init__(self)
+        self.x = x
+        self.y = y
+        self.speed = speed
+        self.image = pygame.image.load("CCA\\assets\images\zombies\\normal.png")
+        self.image = pygame.transform.scale(self.image, (60,60))
+    
+    async def update(self):
+        self.x -= self.speed
 
-    def update(self, draw_pos):
-        self.damage_cooldown -= 1
-
-    def draw(self, display, draw_pos):
-        display.blit(self.img, draw_pos)
-
-    def damage(self):
-        if self.damage_cooldown <= 0:
-            self.health -= 1
-            self.damage_cooldown = 30
-            random.choice(pygame.mixer.Sound("CCA\\assets\sounds\chomp.ogg")).play()
+    def draw(self):
+        screen.blit(self.image, (self.x, self.y))
 
 
-# Player class
-class Player(pygame.sprite.Sprite):
-    def __init__(self):
-        super().__init__()
-        self.image = pygame.image.load("CCA\\assets\images\plants\peashooter.png")
-        pygame.transform.scale(self.image, (64,64))
-        self.rect = self.image.get_rect()
-        self.rect.center = (WIDTH // 2, HEIGHT // 2)
-        self.speed = 5
+# Create a Peashooter instance
+plants = [
+    Peashooter(0, 20),  
+    Peashooter(0, 90),  
+    Peashooter(0, 160)
+]
 
-    def update(self):
-        keys = pygame.key.get_pressed()
-        if keys[pygame.K_LEFT] and self.rect.left > 0:
-            self.rect.x -= self.speed
-        if keys[pygame.K_RIGHT] and self.rect.right < WIDTH:
-            self.rect.x += self.speed
-        if keys[pygame.K_UP] and self.rect.top > 0:
-            self.rect.y -= self.speed
-        if keys[pygame.K_DOWN] and self.rect.bottom < HEIGHT:
-            self.rect.y += self.speed
+zombies = [
+    Zombie(500, 90, 50)
+]
 
-# Sprite groups
-all_sprites = pygame.sprite.Group()
-players = pygame.sprite.Group()
 
-# Create player
-player = Player()
-all_sprites.add(player)
-players.add(player)
+async def update_zombies(currrent_zombie:Zombie):
+    await asyncio.sleep(1)
+    currrent_zombie.update()
 
-# Game loop
-clock = pygame.time.Clock()
-running = True
-while running:
-    # Event handling
+# Main game loop
+while True:
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            running = False
+            pygame.quit()
+            sys.exit()
 
-    # Update
-    all_sprites.update()
+    # # Get mouse position
+    # mouse_x, mouse_y = pygame.mouse.get_pos()
+    # hover_row = mouse_y // grid_size
+    # hover_col = mouse_x // grid_size
 
-    # Draw
-    screen.fill((0, 0, 0))
-    all_sprites.draw(screen)
+    # Draw the grid
+    screen.fill(WHITE)
+    
+    # Draw the Peashooter
+    for peashooter in plants:
+        peashooter.draw()
 
-    # Refresh display
+    for zombie in zombies:
+        update_zombies(zombie)
+        zombie.draw()
+
+    # for row in range(rows):
+    #     for col in range(cols):
+    #         rect = pygame.Rect(col * grid_size, row * grid_size, grid_size, grid_size)
+
+    #         # Check if the mouse is hovering over the cell
+    #         if hover_row == row and hover_col == col:
+    #             pygame.draw.rect(screen, HOVER_GRAY, rect)
+    #         elif grid[row][col] == 0:
+    #             pygame.draw.rect(screen, GRAY, rect)
+    #         else:
+    #             pygame.draw.rect(screen, BLACK, rect)
+
     pygame.display.flip()
-
-    # Cap the frame rate
-    clock.tick(FPS)
-
-# ... (previous code)
-
-# Initialize game statistics
-game_stats = {
-    'score': 0,
-    'level': 1,
-    'lives': 3,
-}
-
-# Game loop (continued)
-while running:
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Update
-    all_sprites.update()
-
-    # Draw
-    screen.fill((0, 0, 0))
-    all_sprites.draw(screen)
-
-    # Display score and level
-    font = pygame.font.Font(None, 36)
-    score_text = font.render(f'Score: {game_stats["score"]}', True, WHITE)
-    level_text = font.render(f'Level: {game_stats["level"]}', True, WHITE)
-    screen.blit(score_text, (10, 10))
-    screen.blit(level_text, (10, 50))
-
-    # Refresh display
-    pygame.display.flip()
-
-    # Cap the frame rate
-    clock.tick(FPS)
-
-# ... (previous code)
-
-# CSV file name
-csv_file = 'game_stats.csv'
-
-# Game loop (continued)
-while running:
-    # Event handling
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-
-    # Update
-    all_sprites.update()
-
-    # Draw
-    screen.fill((0, 0, 0))
-    all_sprites.draw(screen)
-
-    # Display score and level
-    font = pygame.font.Font(None, 36)
-    score_text = font.render(f'Score: {game_stats["score"]}', True, WHITE)
-    level_text = font.render(f'Level: {game_stats["level"]}', True, WHITE)
-    screen.blit(score_text, (10, 10))
-    screen.blit(level_text, (10, 50))
-
-    # Refresh display
-    pygame.display.flip()
-
-    # Save game statistics to CSV
-    with open(csv_file, 'w', newline='') as csvfile:
-        fieldnames = ['score', 'level', 'lives']
-        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-        
-        # Write header if the file is empty
-        if csvfile.tell() == 0:
-            writer.writeheader()
-
-        # Write game statistics
-        writer.writerow(game_stats)
-
-    # Cap the frame rate
-    clock.tick(FPS)
-
-# Quit the game
-pygame.quit()
-sys.exit()
