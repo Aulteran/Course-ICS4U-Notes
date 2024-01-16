@@ -3,7 +3,7 @@ Author: Aadil Hussain
 Built on: Python 3.11.7
 '''
 
-import pygame
+import pygame, random
 import sys
 import csv
 
@@ -37,12 +37,37 @@ WHITE = (255, 255, 255)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Plants vs Zombies")
 
+# Peashooter class
+class Peashooter():
+    def __init__(self, type, pos, max_health=100):
+        self.face_img = pygame.image.load("CCA\\assets\images\plants\peashooter.png").convert()
+        self.max_health = max_health
+        self.health = max_health
+
+        self.damage_cooldown = 30
+
+    def rect(self):
+        return pygame.Rect((self.pos[0]*24) + 56, (self.pos[1]*24) + 50, 16, 16)
+
+    def update(self, draw_pos):
+        self.damage_cooldown -= 1
+
+    def draw(self, display, draw_pos):
+        display.blit(self.img, draw_pos)
+
+    def damage(self):
+        if self.damage_cooldown <= 0:
+            self.health -= 1
+            self.damage_cooldown = 30
+            random.choice(pygame.mixer.Sound("CCA\\assets\sounds\chomp.ogg")).play()
+
+
 # Player class
 class Player(pygame.sprite.Sprite):
     def __init__(self):
         super().__init__()
-        self.image = pygame.Surface((50, 50))
-        self.image.fill(WHITE)
+        self.image = pygame.image.load("CCA\\assets\images\plants\peashooter.png")
+        pygame.transform.scale(self.image, (64,64))
         self.rect = self.image.get_rect()
         self.rect.center = (WIDTH // 2, HEIGHT // 2)
         self.speed = 5
