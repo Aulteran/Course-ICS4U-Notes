@@ -55,6 +55,12 @@ HOVER_GRAY = (150, 150, 150)
 # # Create a 2D array to represent the grid
 # grid = [[0 for _ in range(cols)] for _ in range(rows)]
 
+# player
+class Player():
+    def __init__(self):
+        raise NotImplementedError
+
+
 # Peashooter class
 class Peashooter():
     def __init__(self, x, y, image_path = "CCA\\assets\images\plants\peashooter.png"):
@@ -68,12 +74,12 @@ class Peashooter():
 
 # zombie class
 class Zombie(pygame.sprite.Sprite):
-    def __init__(self, x, y, speed, image_path = "CCA\\assets\images\zombies\normal.png"):
+    def __init__(self, x, y, speed = 1, image_path = "CCA\\assets\images\zombies\\normal.png"):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
         self.speed = speed
-        self.image = pygame.image.load("CCA\\assets\images\zombies\\normal.png")
+        self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (70,100))
         self.hp = 100
     
@@ -81,6 +87,7 @@ class Zombie(pygame.sprite.Sprite):
         self.hp -= damage_dealt
 
     async def update(self):
+        await asyncio.sleep(1)
         self.x -= self.speed
 
     def draw(self):
@@ -106,14 +113,10 @@ plants = [
 ]
 
 zombies = [
-    Zombie(500, 110, speed = 50)
+    Zombie(500, 110, 10)
 ]
 
 dropshadow = DropShadow(30,30)
-
-async def update_zombies(currrent_zombie:Zombie):
-    await asyncio.sleep(1)
-    currrent_zombie.update()
 
 # Main game loop
 while True:
@@ -138,10 +141,8 @@ while True:
         peashooter.draw()
 
     for zombie in zombies:
-        update_zombies(zombie)
+        asyncio.run(zombie.update())
         zombie.draw()
-
-
 
     # for row in range(rows):
     #     for col in range(cols):
