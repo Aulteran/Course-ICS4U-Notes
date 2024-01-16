@@ -28,7 +28,7 @@ import csv
 pygame.init()
 
 # Constants
-WIDTH, HEIGHT = 600, 325
+WIDTH, HEIGHT = 800, 600
 FPS = 60
 
 # Colors
@@ -38,7 +38,10 @@ WHITE = (255, 255, 255)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Plants vs Zombies")
 
+bg_lawn_image = pygame.image.load('CCA\\assets\images\Lawn.png')
+
 # Define colors
+AMBIENT_PVZ_BG_COLOR = (127, 202, 159)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
@@ -71,26 +74,42 @@ class Zombie(pygame.sprite.Sprite):
         self.y = y
         self.speed = speed
         self.image = pygame.image.load("CCA\\assets\images\zombies\\normal.png")
-        self.image = pygame.transform.scale(self.image, (60,60))
+        self.image = pygame.transform.scale(self.image, (70,100))
+        self.hp = 100
     
+    def damaged(self, damage_dealt):
+        self.hp -= damage_dealt
+
     async def update(self):
         self.x -= self.speed
 
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
 
+class DropShadow():
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
+        self.img = pygame.image.load("CCA\\assets\images\\black.jpg")
+        self.img = pygame.transform.scale(self.img, (750,500))
+        self.img.set_alpha(100)
+    
+    def draw(self):
+        screen.blit(self.img, (self.x, self.y))
+
 
 # Create a Peashooter instance
 plants = [
-    Peashooter(0, 20),  
-    Peashooter(0, 90),  
-    Peashooter(0, 160)
+    Peashooter(60, 20),  
+    Peashooter(60, 90),  
+    Peashooter(60, 160)
 ]
 
 zombies = [
-    Zombie(500, 90, 50)
+    Zombie(500, 110, speed = 50)
 ]
 
+dropshadow = DropShadow(30,30)
 
 async def update_zombies(currrent_zombie:Zombie):
     await asyncio.sleep(1)
@@ -109,8 +128,11 @@ while True:
     # hover_col = mouse_x // grid_size
 
     # Draw the grid
-    screen.fill(WHITE)
+    # screen.fill(AMBIENT_PVZ_BG_COLOR)
+    screen.blit(bg_lawn_image, (0,0))
     
+    dropshadow.draw()
+
     # Draw the Peashooter
     for peashooter in plants:
         peashooter.draw()
@@ -118,6 +140,8 @@ while True:
     for zombie in zombies:
         update_zombies(zombie)
         zombie.draw()
+
+
 
     # for row in range(rows):
     #     for col in range(cols):
