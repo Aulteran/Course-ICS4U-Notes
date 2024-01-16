@@ -8,7 +8,8 @@ from pygame import Surface
 import sys
 import csv
 
-# For your culminating assignment, you will be incorporating all the techniques learned in the course over the semester.
+# CULMINATING ASSIGNMENT
+# Incorportate all the techniques learned in the course over the semester.
 # You will be creating a computer game level using PyGame. You must:
 # -	Include an OOP approach
 # --	Have User Classes
@@ -38,7 +39,7 @@ WHITE = (255, 255, 255)
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Plants vs Zombies")
 
-bg_lawn_image = pygame.image.load('CCA\\assets\images\Lawn.png')
+bg_lawn_image = pygame.image.load('CCA\\assets\\images\\Lawn.png')
 
 # Define colors
 AMBIENT_PVZ_BG_COLOR = (127, 202, 159)
@@ -46,6 +47,8 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 GRAY = (200, 200, 200)
 HOVER_GRAY = (150, 150, 150)
+
+PLANT_SPAWNPOINTS = []
 
 # # Grid properties
 # grid_size = min(WIDTH, HEIGHT) // 8  # Size of each cell
@@ -57,13 +60,14 @@ HOVER_GRAY = (150, 150, 150)
 
 # player
 class Player():
-    def __init__(self):
-        raise NotImplementedError
+    def __init__(self, start_money=500, start_plants=1):
+        self.wallet = start_money
+        self.plants = start_plants
 
 
 # Peashooter class
 class Peashooter():
-    def __init__(self, x, y, image_path = "CCA\\assets\images\plants\peashooter.png"):
+    def __init__(self, x, y, image_path = "CCA\\assets\\images\\plants\\peashooter.png"):
         self.x = x
         self.y = y
         self.image = pygame.image.load(image_path)
@@ -74,7 +78,7 @@ class Peashooter():
 
 # zombie class
 class Zombie(pygame.sprite.Sprite):
-    def __init__(self, x, y, speed = 1, image_path = "CCA\\assets\images\zombies\\normal.png"):
+    def __init__(self, x, y, speed = 1, image_path = "CCA\\assets\\images\\zombies\\normal.png"):
         pygame.sprite.Sprite.__init__(self)
         self.x = x
         self.y = y
@@ -97,7 +101,7 @@ class DropShadow():
     def __init__(self, x, y):
         self.x = x
         self.y = y
-        self.img = pygame.image.load("CCA\\assets\images\\black.jpg")
+        self.img = pygame.image.load("CCA\\assets\\images\\black.jpg")
         self.img = pygame.transform.scale(self.img, (750,500))
         self.img.set_alpha(100)
     
@@ -107,9 +111,9 @@ class DropShadow():
 
 # Create a Peashooter instance
 plants = [
-    Peashooter(60, 20),  
-    Peashooter(60, 90),  
-    Peashooter(60, 160)
+    Peashooter(60, 30),
+    Peashooter(60, 100),
+    Peashooter(60, 170)
 ]
 
 zombies = [
