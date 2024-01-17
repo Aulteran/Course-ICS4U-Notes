@@ -12,8 +12,9 @@ ZOMBIE_SPAWNPOINTS = [(720, 260), (720, 180), (720, 340)]
 UPGRADES_MENU_PROMPT = (
 '''======|UPGRADES|======
 1) Stronger Plant (3 Strength Levels)
-2) Stronger Peashot
-3) Go Back (EXIT MENU)
+2) Stronger Peashot (3 Strength Levels)
+3) Faster Peashot (3 Speed Levels)
+4) Go Back (EXIT MENU)
 Please Select: ''')
 
 # player class
