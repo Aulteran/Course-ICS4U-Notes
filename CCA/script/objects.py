@@ -60,6 +60,7 @@ class Peashooter(pygame.sprite.Sprite):
         self.shots = []
         self.shotsgrouped = pygame.sprite.Group()
         self.enemiesgrouped = pygame.sprite.Group()
+        self.health = 100
     
     def add_enem_zombie(self, spawnpoint=0):
         if spawnpoint == 0:
@@ -78,6 +79,9 @@ class Peashooter(pygame.sprite.Sprite):
     def shot_hit_zombie(self, shot):
         shot:Pea
         shot.kill()
+    
+    def take_damage(self):
+        self.health -= 50
 
 class Pea(pygame.sprite.Sprite):
     def __init__(self, x, y, angle = 0, speed = 2, strength = 40,  image_path = "CCA\\script\\assets\\images\\projectiles\\pea.png"):

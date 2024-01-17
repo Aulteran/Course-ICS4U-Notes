@@ -4,6 +4,6 @@
 | KEYBIND | ACTION |
 |---------|--------|
 |P|Buy Plant|
+|U|Buy Upgrades
 |B|Check Wallet Balance|
-
 

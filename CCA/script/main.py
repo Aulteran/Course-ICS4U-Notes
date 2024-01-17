@@ -63,7 +63,12 @@ def collision_detector(player:Player):
                     plant.shots.remove(shot)
                     
                 # check for zombie-plant collision
-                pass
+                zombie_plant_collision = pygame.sprite.collide_rect(zombie, plant)
+                if zombie_plant_collision:
+                    plant.take_damage()
+                    zombie.kill()
+                    plant.enemies.remove(zombie)
+                    del zombie
     
     for obj in objs_to_del:
         obj:pygame.sprite.Sprite()
@@ -96,12 +101,21 @@ while True:
             if event.key == pygame.K_SPACE:
                 # make electric fence
                 raise NotImplementedError
-            
+            # show wallet balance on KBM B
             if event.key == pygame.K_b:
                 main_player.show_balance()
             # add plants on KBM P
             if event.key == pygame.K_p:
-                main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
+                if main_player.wallet >= 250:
+                    main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
+                    main_player.wallet -= 250
+                    new_plant:Peashooter = main_player.plants[-1]
+                    print(f"Purchased Plant {new_plant.plantID} for $250\nNew Balance: ${main_player.wallet}")
+                else: print("Not Enough Balance!")
+            # Upgrades Menu on KBM U
+            if event.key == pygame.K_u:
+                main_player.upgrades_menu()
+
 
     # add background image
     screen.blit(PVZ_LAWN_IMG, (0,0))
@@ -136,8 +150,8 @@ while True:
                 del enemy
                 # create replacement zombie
                 plant.add_enem_zombie(ZOMBIE_SPAWNPOINTS[plant.plantID])
-                main_player.wallet += 100
-                print(f"Enemy Killed! +${100}\nNew Balance: ${main_player.wallet}")
+                main_player.wallet += 50
+                print(f"Enemy Killed! +${50}\nNew Balance: ${main_player.wallet}")
 
         # if plant is supposed to be shooting, shoot
         if plant.enemies:
@@ -150,7 +164,6 @@ while True:
         # update and draw shots
         plant.shotsgrouped.update() # cant use any asyncio sleeps for smooth animation
         plant.shotsgrouped.draw(screen)
-
 
     pygame.display.flip() # pygame window mainloop
     clock.tick(60) # FPS limiter set to 60
