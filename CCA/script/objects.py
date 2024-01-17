@@ -6,8 +6,10 @@ Built on: Python 3.12.1
 import pygame, random, math
 
 # predefined default possible spawnpoints for zombies
-PLANT_SPAWNPOINTS = [(60, 240), (60, 160), (60, 320)]
-ZOMBIE_SPAWNPOINTS = [(720, 260), (720, 180), (720, 340)]
+PLANT_SPAWNPOINTS = [(60, 240), (60, 160), (60, 320), (60, 90), (60, 390), (60, 30)]
+ZOMBIE_SPAWNPOINTS = [(720, 260), (720, 180), (720, 340), (720, 110), (720, 400), (720, 50)]
+
+plants_vertically_ordered = [6, 4, 2, 1, 3, 5] # plant IDs top to bottom
 
 UPGRADES_MENU_PROMPT = (
 '''======|UPGRADES|======
@@ -16,6 +18,13 @@ UPGRADES_MENU_PROMPT = (
 3) Faster Peashot (3 Speed Levels)
 4) Go Back (EXIT MENU)
 Please Select: ''')
+
+# gets int/float inputs without error
+def numQuery(prompt):
+    try:
+        return int(input(prompt))
+    except(ValueError):
+        print("invalid input, please enter a number")
 
 # player class
 class Player():
@@ -33,8 +42,8 @@ class Player():
         self.speed_booster_unlocked = 1 # 1 to 3 possible
     
     def add_plant(self, spawn_coords):
-        if self.num_plants >= 5:
-            print("Cannot add additional plants! Max of 5 Plants")
+        if self.num_plants >= 6:
+            print("Cannot add additional plants! 6 Plants Maximum")
         # create peashooter instance
         self.plants.append(Peashooter(spawn_coords[0], spawn_coords[1], self))
         self.num_plants += 1
@@ -51,6 +60,14 @@ class Player():
         print(f"USER WALLET\nBalance: {self.wallet}")
     
     def upgrades_menu(self):
+        upgrade_choice = numQuery(UPGRADES_MENU_PROMPT)
+        if upgrade_choice == 1:
+            print("Plants are numbered from top to bottom.")
+            select_plant = input("Which plant would you like to upgrade?: ")
+            plantID = plants_vertically_ordered[select_plant-1]
+            plant_selected:Peashooter = self.plants[plantID]
+            if plant_selected.health == 100:
+                pass
         raise NotImplementedError
 
 # Peashooter class

@@ -45,6 +45,11 @@ HOVER_GRAY = (150, 150, 150)
 # background Plants vs Zombies Img filepath loaded in pygame
 PVZ_LAWN_IMG = pygame.image.load('CCA\script\\assets\\images\\Lawn.png')
 
+# save data to csv
+def save_stats(player):
+    raise NotImplementedError
+
+# detect collisions between sprites
 def collision_detector(player:Player):
     objs_to_del = []
     for plant in player.plants:
@@ -100,14 +105,15 @@ while True:
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 # make electric fence
-                raise NotImplementedError
+                print(NotImplementedError)
+                print("This feature has been redacted")
             # show wallet balance on KBM B
             if event.key == pygame.K_b:
                 main_player.show_balance()
             # add plants on KBM P
             if event.key == pygame.K_p:
                 print(f"A plant costs $250\nYour Balance: ${main_player.wallet}")
-                if main_player.wallet >= 250 and input("Are you sure?[Y/N]: ").upper()[0] == "Y":
+                if main_player.wallet >= 250:
                     main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
                     main_player.wallet -= 250
                     new_plant:Peashooter = main_player.plants[-1]
@@ -173,3 +179,6 @@ while True:
 
     pygame.display.flip() # pygame window mainloop
     clock.tick(60) # FPS limiter set to 60
+
+
+
