@@ -56,7 +56,34 @@ ui_elements.add(dropshadow)
 
 clock = pygame.time.Clock() # FPS limiter required object
 
-first_run = True
+def collision_detector(player:Player):
+    objs_to_del = []
+    for plant in player.plants:
+        plant:Peashooter
+        for zombie in plant.enemies:
+            zombie:Zombie
+            for shot in plant.shots:
+                shot:Pea
+                # check for zombie-pea collision
+                zombie_pea_collision = pygame.sprite.collide_rect(zombie, shot)
+                if zombie_pea_collision:
+                    objs_to_del.append(shot)
+                    print(shot.strength)
+                    zombie.hit_by_shot(shot.strength)
+                    plant.shot_hit_zombie(shot)
+                    plant.shooting = True
+                    plant.shots.remove(shot)
+                    
+
+                # check for zombie-plant collision
+                pass
+    
+    for obj in objs_to_del:
+        obj:pygame.sprite.Sprite()
+        obj.kill()
+        del obj
+
+first_loop = True
 
 # Main game loop
 while True:
@@ -71,19 +98,18 @@ while True:
     screen.blit(PVZ_LAWN_IMG, (0,0))
     
     # add "dropshadow" to increase sprite visibility
+    ui_elements.update()
     ui_elements.draw(screen)
 
     main_player.plantsgrouped.update()
     main_player.plantsgrouped.draw(screen)
     
-    if first_run:
+    if first_loop:
         pygame.display.flip() # pygame window mainloop
         time.sleep(1)
-        first_run = False
+        first_loop = False
 
-    # zombie list
-    zombies = []
-    zombie:Zombie
+    collision_detector(main_player)
  
     # plant management loop
     for plant in main_player.plants:
@@ -96,22 +122,24 @@ while True:
 
             # if zombie health <0, remove zomb from sys.mem
             if enemy.hp <= 0:
+                enemy.kill()
+                plant.enemies.remove(enemy)
                 del enemy
                 # create replacement zombie
                 plant.add_enem_zombie(ZOMBIE_SPAWNPOINTS[plant.plantID])
 
         # if plant is supposed to be shooting, shoot
-        if plant.shooting:
+        if plant.enemies:
             plant.shoot()
-        plant.shooting = False
 
         # update and draw zombies
         plant.enemiesgrouped.update()
         plant.enemiesgrouped.draw(screen)
 
         # update and draw shots
-        plant.peashots.update() # cant use any asyncio sleeps for smooth animation
-        plant.peashots.draw(screen)
+        plant.shotsgrouped.update() # cant use any asyncio sleeps for smooth animation
+        plant.shotsgrouped.draw(screen)
+
 
     pygame.display.flip() # pygame window mainloop
 

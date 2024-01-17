@@ -39,7 +39,6 @@ class Player():
         # create enemy zombie
         active_plant.add_enem_zombie()
 
-
 # Peashooter class
 class Peashooter(pygame.sprite.Sprite):
     def __init__(self, x, y, player:Player, plantID = 0, image_path = "CCA\\script\\assets\\images\\plants\\peashooter.png"):
@@ -56,26 +55,29 @@ class Peashooter(pygame.sprite.Sprite):
             self.plantID = player.num_plants
         self.shooting = False
         self.shots = []
-        self.peashots = pygame.sprite.Group()
+        self.shotsgrouped = pygame.sprite.Group()
         self.enemiesgrouped = pygame.sprite.Group()
     
     def add_enem_zombie(self, spawnpoint=0):
-        self.shooting = False
         if spawnpoint == 0:
             spawnpoint = self.enemy_spawnpoint
         self.enemies.append(Zombie(spawnpoint[0], spawnpoint[1]+15, random.uniform(0.5, 2)))
         self.enemiesgrouped.add(self.enemies[-1])
         print(f"Created Zombie {self.enemies[-1]}")
-        self.shooting = True
     
     def shoot(self, spawnpoint=0):
         if spawnpoint==0:
             spawnpoint = (self.rect.centerx, self.rect.centery)
         self.shots.append(Pea(spawnpoint[0], spawnpoint[1], angle=0))
-        self.peashots.add(self.shots[0])
+        self.shotsgrouped.add(self.shots[0])
+        self.shooting = False
+    
+    def shot_hit_zombie(self, shot):
+        shot:Pea
+        shot.kill()
 
 class Pea(pygame.sprite.Sprite):
-    def __init__(self, x, y, angle = 0, speed = 2, image_path = "CCA\\script\\assets\\images\\projectiles\\pea.png"):
+    def __init__(self, x, y, angle = 0, speed = 2, strength = 40,  image_path = "CCA\\script\\assets\\images\\projectiles\\pea.png"):
         pygame.sprite.Sprite.__init__(self)
         # Load, transform, and get rect of image
         self.image = pygame.image.load(image_path)
@@ -89,6 +91,7 @@ class Pea(pygame.sprite.Sprite):
         # Set speed based off angle, will prolly be 0 degrees for PvZ
         self.speedx = self.speedconst * math.cos(math.radians(self.angle))
         self.speedy = -(self.speedconst) * math.sin(math.radians(self.angle))
+        self.strength = strength
     
     def update(self): 
         self.rect.x += self.speedx
@@ -110,8 +113,8 @@ class Zombie(pygame.sprite.Sprite):
         self.hp = 100 # can be 200hp 1/5th chance
         if random.randint(1,5) == 1:
             self.hp *= 2
-    
-    def damaged(self, damage_dealt):
+        
+    def hit_by_shot(self, damage_dealt):
         self.hp -= damage_dealt
 
     def update(self):
