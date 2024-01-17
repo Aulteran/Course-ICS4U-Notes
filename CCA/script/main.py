@@ -45,17 +45,6 @@ HOVER_GRAY = (150, 150, 150)
 # background Plants vs Zombies Img filepath loaded in pygame
 PVZ_LAWN_IMG = pygame.image.load('CCA\script\\assets\\images\\Lawn.png')
 
-# build init player object
-main_player = Player("Ault")
-main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
-
-ui_elements = pygame.sprite.Group()
-
-dropshadow = DropShadow(30,30)
-ui_elements.add(dropshadow)
-
-clock = pygame.time.Clock() # FPS limiter required object
-
 def collision_detector(player:Player):
     objs_to_del = []
     for plant in player.plants:
@@ -68,7 +57,6 @@ def collision_detector(player:Player):
                 zombie_pea_collision = pygame.sprite.collide_rect(zombie, shot)
                 if zombie_pea_collision:
                     objs_to_del.append(shot)
-                    print(shot.strength)
                     zombie.hit_by_shot(shot.strength)
                     plant.shot_hit_zombie(shot)
                     plant.shooting = True
@@ -81,6 +69,17 @@ def collision_detector(player:Player):
         obj:pygame.sprite.Sprite()
         obj.kill()
         del obj
+
+# build init player object
+main_player = Player("Ault")
+main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
+
+ui_elements = pygame.sprite.Group()
+
+dropshadow = DropShadow(30,30)
+ui_elements.add(dropshadow)
+
+clock = pygame.time.Clock() # FPS limiter required object
 
 first_loop = True
 
@@ -127,6 +126,7 @@ while True:
                 # create replacement zombie
                 plant.add_enem_zombie(ZOMBIE_SPAWNPOINTS[plant.plantID])
                 main_player.wallet += 100
+                print(f"Enemy Killed! +${100}\nNew Balance: ${main_player.wallet}")
 
         # if plant is supposed to be shooting, shoot
         if plant.enemies:

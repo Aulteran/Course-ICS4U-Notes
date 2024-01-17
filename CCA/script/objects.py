@@ -11,7 +11,7 @@ ZOMBIE_SPAWNPOINTS = [(720, 260), (720, 200), (720, 340)]
 
 # player class
 class Player():
-    def __init__(self, username='player', start_money=500, start_plants=1):
+    def __init__(self, username='player', start_money=0, start_plants=1):
         self.name = username
         self.wallet = start_money
         self.num_plants = 0 # max 5 plants
@@ -109,10 +109,12 @@ class Zombie(pygame.sprite.Sprite):
         self.rect.centerx = x
         self.rect.centery = y + 40
         self.speed = speed
-        # set default health or superzombie x2 health
-        self.hp = 100 # can be 200hp 1/5th chance
+        self.hp = 100
+        # 1/5 chance make superzombie
         if random.randint(1,5) == 1:
-            self.hp *= 2
+            print("SUPERSTRENGTH ZOMBIE HAS SPAWNED!")
+            self.speed *= 1.30 # 30% speed boost
+            self.hp *= 2 # 2x hp
         
     def hit_by_shot(self, damage_dealt):
         self.hp -= damage_dealt
