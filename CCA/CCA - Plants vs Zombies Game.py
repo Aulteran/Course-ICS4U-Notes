@@ -3,6 +3,7 @@ Author: Aadil Hussain
 Built on: Python 3.12.1
 '''
 
+from typing import Any
 import pygame, random, asyncio, math
 import sys, csv
 from tkinter import *
@@ -29,7 +30,6 @@ pygame.init()
 
 # Constants
 WIDTH, HEIGHT = 800, 600
-FPS = 60
 
 # Colors
 WHITE = (255, 255, 255)
@@ -47,7 +47,7 @@ HOVER_GRAY = (150, 150, 150)
 
 # predefined default possible spawnpoints for zombies
 PLANT_SPAWNPOINTS = [(60, 240), (60, 180), (60, 320)]
-ZOMBIE_SPAWNPOINTS = [(720, 240), (720, 180), (720, 320)]
+ZOMBIE_SPAWNPOINTS = [(720, 260), (720, 200), (720, 340)]
 
 # background Plants vs Zombies Img filepath loaded in pygame
 PVZ_LAWN_IMG = pygame.image.load('CCA\\assets\\images\\Lawn.png')
@@ -85,6 +85,7 @@ class Peashooter():
         self.shooting = False
         self.shots = []
         self.peashots = pygame.sprite.Group()
+        self.enemiesgrouped = pygame.sprite.Group()
 
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
@@ -93,38 +94,33 @@ class Peashooter():
         self.shooting = False
         if spawnpoint == 0:
             spawnpoint = self.enemy_spawnpoint
-        self.enemies.append(Zombie(spawnpoint[0], spawnpoint[1], random.randint(10, 30)))
+        self.enemies.append(Zombie(spawnpoint[0], spawnpoint[1], random.uniform(0.5, 2)))
+        self.enemiesgrouped.add(self.enemies[-1])
         print(f"Created Zombie {self.enemies[-1]}")
         self.shooting = True
     
     def shoot(self, spawnpoint=0):
-        # if spawnpoint==0:
-        #     spawnpoint = (self.x, self.y)
-        # self.shots.append(Pea(spawnpoint[0], spawnpoint[1], 5))
-        # print(f"Shot at zombie on row {self.plantID}")
-        self.shots.append(Pea(400, 300, angle=0))
+        if spawnpoint==0:
+            spawnpoint = (self.x, self.y)
+        self.shots.append(Pea(spawnpoint[0], spawnpoint[1], angle=0))
         self.peashots.add(self.shots[0])
-
 
 class Pea(pygame.sprite.Sprite):
     def __init__(self, x, y, angle = 0, image_path = "CCA\\assets\\images\\projectiles\\pea.png"):
         pygame.sprite.Sprite.__init__(self)
+        # Load, transform, and get rect of image
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (30,30))
         self.rect = self.image.get_rect()
-        self.rect.centerx = x-250 # correction from plant spawn coords
-        self.rect.centery = y+10 # same as rect.centerx
+        # Set init pos and angle
+        self.rect.centerx = x + 30
+        self.rect.centery = y + 70
         self.angle = angle
-        self.speedx = 10 * math.cos(math.radians(self.angle))
-        self.speedy = -10 * math.sin(math.radians(self.angle))
-        self.fresh_shot = True # on first update of shot
+        # Set speed based off angle, will prolly be 0 degrees for PvZ
+        self.speedx = 5 * math.cos(math.radians(self.angle))
+        self.speedy = -5 * math.sin(math.radians(self.angle))
     
-    def update(self): # prior async
-        # if self.fresh_shot:
-        #     await asyncio.sleep(2)
-        #     self.fresh_shot = False
-        # await asyncio.sleep(0.005)
-        # self.x += self.speed
+    def update(self): 
         self.rect.x += self.speedx
         self.rect.y += self.speedy
 
@@ -132,22 +128,22 @@ class Pea(pygame.sprite.Sprite):
 class Zombie(pygame.sprite.Sprite):
     def __init__(self, x, y, speed = 1, image_path = "CCA\\assets\\images\\zombies\\normal.png"):
         pygame.sprite.Sprite.__init__(self)
-        self.x = x
-        self.y = y
-        self.speed = speed
+        # Load, transform, and get rect of image
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (70,100))
+        self.rect = self.image.get_rect()
+        # set init pos and speed
+        self.rect.centerx = x
+        self.rect.centery = y + 40
+        self.speed = speed
+        # set health
         self.hp = 100
     
     def damaged(self, damage_dealt):
         self.hp -= damage_dealt
 
-    async def update(self):
-        await asyncio.sleep(1)
-        self.x -= self.speed
-
-    def draw(self):
-        screen.blit(self.image, (self.x, self.y))
+    def update(self):
+        self.rect.x -= self.speed
 
 # dropshadow to increase sprite visibility
 class DropShadow():
@@ -167,26 +163,10 @@ main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
 
 dropshadow = DropShadow(30,30)
 
-cooldown = False
-async def gen_rand_zombies(player:Player):
-    # this generator doesnt work, blackscreens the whole program
-    # will use diff method
-    global cooldown
-    if cooldown:    
-        for plant in player.plants:
-            print("found player")
-            plant.add_enem_zombie()
-    cooldown = True
-    await asyncio.sleep(10)
-    cooldown = False # need to fix
-
-# asyncio.run(gen_rand_zombies(main_player))
-
-clock = pygame.time.Clock()
+clock = pygame.time.Clock() # FPS limiter required object
 
 # Main game loop
 while True:
-    clock.tick(FPS)
 
     # if quit, kill script
     for event in pygame.event.get():
@@ -219,21 +199,15 @@ while True:
                 del enemy
                 # create replacement zombie
                 plant.add_enem_zombie(ZOMBIE_SPAWNPOINTS[plant.plantID])
-            
-            # update and draw zombies
-            # asyncio.run(enemy.update())
-            enemy.draw()
 
         # if plant is supposed to be shooting, shoot
         if plant.shooting:
             plant.shoot()
         plant.shooting = False
-        
-        # update and draw shots
-        # for shot in plant.shots:
-        #     shot:Pea
-        #     asyncio.run(shot.update())
-        #     shot.draw()
+
+        plant.enemiesgrouped.update()
+        plant.enemiesgrouped.draw(screen)
+
         plant.peashots.update() # cant use any asyncio sleeps for smooth animation
         plant.peashots.draw(screen)
 
