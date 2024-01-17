@@ -74,7 +74,6 @@ def collision_detector(player:Player):
                     plant.shooting = True
                     plant.shots.remove(shot)
                     
-
                 # check for zombie-plant collision
                 pass
     
@@ -127,6 +126,7 @@ while True:
                 del enemy
                 # create replacement zombie
                 plant.add_enem_zombie(ZOMBIE_SPAWNPOINTS[plant.plantID])
+                main_player.wallet += 100
 
         # if plant is supposed to be shooting, shoot
         if plant.enemies:
@@ -142,5 +142,4 @@ while True:
 
 
     pygame.display.flip() # pygame window mainloop
-
-    clock.tick(60)
+    clock.tick(60) # FPS limiter set to 60
