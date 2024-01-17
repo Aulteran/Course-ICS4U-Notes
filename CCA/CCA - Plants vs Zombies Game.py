@@ -3,9 +3,8 @@ Author: Aadil Hussain
 Built on: Python 3.12.1
 '''
 
-import pygame, random, asyncio
+import pygame, random, asyncio, math
 import sys, csv
-from pygame import Surface
 from tkinter import *
 
 # CULMINATING ASSIGNMENT INSTRUCTIONS
@@ -85,6 +84,7 @@ class Peashooter():
             self.plantID = player.num_plants
         self.shooting = False
         self.shots = []
+        self.peashots = pygame.sprite.Group()
 
     def draw(self):
         screen.blit(self.image, (self.x, self.y))
@@ -98,29 +98,35 @@ class Peashooter():
         self.shooting = True
     
     def shoot(self, spawnpoint=0):
-        if spawnpoint==0:
-            spawnpoint = (self.x, self.y)
-        self.shots.append(Pea(spawnpoint[0], spawnpoint[1], 5))
-        print(f"Shot at zombie on row {self.plantID}")
+        # if spawnpoint==0:
+        #     spawnpoint = (self.x, self.y)
+        # self.shots.append(Pea(spawnpoint[0], spawnpoint[1], 5))
+        # print(f"Shot at zombie on row {self.plantID}")
+        self.shots.append(Pea(400, 300, angle=0))
+        self.peashots.add(self.shots[0])
+
 
 class Pea(pygame.sprite.Sprite):
-    def __init__(self, x, y, projectilespeed=1, image_path = "CCA\\assets\\images\\projectiles\\pea.png"):
-        self.x = x+35
-        self.y = y+45
-        self.speed = projectilespeed
+    def __init__(self, x, y, angle = 0, image_path = "CCA\\assets\\images\\projectiles\\pea.png"):
+        pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (30,30))
+        self.rect = self.image.get_rect()
+        self.rect.x = x+35
+        self.rect.y = y+45
+        self.angle = angle
+        self.speedx = 10 * math.cos(math.radians(self.angle))
+        self.speedy = -10 * math.sin(math.radians(self.angle))
         self.fresh_shot = True # on first update of shot
     
     async def update(self):
-        if self.fresh_shot:
-            await asyncio.sleep(2)
-            self.fresh_shot = False
-        await asyncio.sleep(0.005)
-        self.x += self.speed
-    
-    def draw(self):
-        screen.blit(self.image, (self.x, self.y))
+        # if self.fresh_shot:
+        #     await asyncio.sleep(2)
+        #     self.fresh_shot = False
+        # await asyncio.sleep(0.005)
+        # self.x += self.speed
+        self.rect.x += self.speedx
+        self.rect.y += self.speedy
 
 # zombie class
 class Zombie(pygame.sprite.Sprite):
@@ -176,8 +182,13 @@ async def gen_rand_zombies(player:Player):
 
 # asyncio.run(gen_rand_zombies(main_player))
 
+clock = pygame.time.Clock()
+
 # Main game loop
 while True:
+    clock.tick(FPS)
+
+    # if quit, kill script
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
@@ -219,11 +230,12 @@ while True:
         plant.shooting = False
         
         # update and draw shots
-        for shot in plant.shots:
-            shot:Pea
-            asyncio.run(shot.update())
-            shot.draw()
-            
+        # for shot in plant.shots:
+        #     shot:Pea
+        #     asyncio.run(shot.update())
+        #     shot.draw()
+        plant.peashots.update()
+        plant.peashots.draw(screen)
 
         # draw plants
         plant.draw()
