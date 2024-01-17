@@ -6,8 +6,8 @@ Built on: Python 3.12.1
 import pygame, random, math
 
 # predefined default possible spawnpoints for zombies
-PLANT_SPAWNPOINTS = [(60, 240), (60, 180), (60, 320)]
-ZOMBIE_SPAWNPOINTS = [(720, 260), (720, 200), (720, 340)]
+PLANT_SPAWNPOINTS = [(60, 240), (60, 160), (60, 320)]
+ZOMBIE_SPAWNPOINTS = [(720, 260), (720, 180), (720, 340)]
 
 # player class
 class Player():
@@ -38,6 +38,9 @@ class Player():
 
         # create enemy zombie
         active_plant.add_enem_zombie()
+    
+    def show_balance(self):
+        print(f"USER WALLET\nBalance: {self.wallet}")
 
 # Peashooter class
 class Peashooter(pygame.sprite.Sprite):
@@ -85,7 +88,7 @@ class Pea(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         # Set init pos, speed, and angle
         self.rect.centerx = x + 30
-        self.rect.centery = y + 30
+        self.rect.centery = y + 20
         self.speedconst = speed
         self.angle = angle
         # Set speed based off angle, will prolly be 0 degrees for PvZ
@@ -113,8 +116,14 @@ class Zombie(pygame.sprite.Sprite):
         # 1/5 chance make superzombie
         if random.randint(1,5) == 1:
             print("SUPERSTRENGTH ZOMBIE HAS SPAWNED!")
-            self.speed *= 1.30 # 30% speed boost
+            self.speed = 2.5 # 30% speed boost
             self.hp *= 2 # 2x hp
+            self.image = pygame.image.load("CCA\\script\\assets\\images\\zombies\\superzombie.png")
+            self.image.convert()
+            self.image = pygame.transform.scale(self.image, (70,100))
+            self.rect = self.image.get_rect()
+            self.rect.centerx = x
+            self.rect.centery = y + 40
         
     def hit_by_shot(self, damage_dealt):
         self.hp -= damage_dealt

@@ -92,6 +92,17 @@ while True:
             pygame.quit()
             sys.exit()
 
+        if event.type == pygame.KEYDOWN:
+            if event.key == pygame.K_SPACE:
+                # make electric fence
+                raise NotImplementedError
+            
+            if event.key == pygame.K_b:
+                main_player.show_balance()
+            # add plants on KBM P
+            if event.key == pygame.K_p:
+                main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
+
     # add background image
     screen.blit(PVZ_LAWN_IMG, (0,0))
     
