@@ -118,10 +118,13 @@ class Zombie(pygame.sprite.Sprite):
         self.rect.x -= self.speed
 
 # dropshadow to increase sprite visibility
-class DropShadow():
+class DropShadow(pygame.sprite.Sprite):
     def __init__(self, x, y):
-        self.x = x
-        self.y = y
-        self.img = pygame.image.load("CCA\\script\\assets\\images\\black.jpg")
-        self.img = pygame.transform.scale(self.img, (750,525))
-        self.img.set_alpha(100)
+        pygame.sprite.Sprite.__init__(self)
+
+        self.image = pygame.image.load("CCA\\script\\assets\\images\\black.jpg")
+        self.image = pygame.transform.scale(self.image, (750,525))
+        self.image.set_alpha(100)
+        self.rect = self.image.get_rect()
+        self.rect.centerx = x + 375
+        self.rect.centery = y + 250

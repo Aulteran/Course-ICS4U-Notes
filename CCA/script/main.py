@@ -3,7 +3,7 @@ Author: Aadil Hussain
 Built on: Python 3.12.1
 '''
 
-import pygame
+import pygame, time
 import sys, csv
 from tkinter import *
 from objects import *
@@ -56,6 +56,8 @@ ui_elements.add(dropshadow)
 
 clock = pygame.time.Clock() # FPS limiter required object
 
+first_run = True
+
 # Main game loop
 while True:
 
@@ -73,6 +75,11 @@ while True:
 
     main_player.plantsgrouped.update()
     main_player.plantsgrouped.draw(screen)
+    
+    if first_run:
+        pygame.display.flip() # pygame window mainloop
+        time.sleep(1)
+        first_run = False
 
     # zombie list
     zombies = []
