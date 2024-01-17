@@ -34,7 +34,7 @@ FPS = 60
 # Colors
 WHITE = (255, 255, 255)
 
-# Initialize screen
+# Initialize screen/display
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Plants vs Zombies")
 
@@ -112,14 +112,14 @@ class Pea(pygame.sprite.Sprite):
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (30,30))
         self.rect = self.image.get_rect()
-        self.rect.x = x+35
-        self.rect.y = y+45
+        self.rect.centerx = x-250 # correction from plant spawn coords
+        self.rect.centery = y+10 # same as rect.centerx
         self.angle = angle
         self.speedx = 10 * math.cos(math.radians(self.angle))
         self.speedy = -10 * math.sin(math.radians(self.angle))
         self.fresh_shot = True # on first update of shot
     
-    async def update(self):
+    def update(self): # prior async
         # if self.fresh_shot:
         #     await asyncio.sleep(2)
         #     self.fresh_shot = False
@@ -162,7 +162,7 @@ class DropShadow():
         screen.blit(self.img, (self.x, self.y))
 
 # build init player object
-main_player = Player("Aadil")
+main_player = Player("Ault")
 main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
 
 dropshadow = DropShadow(30,30)
@@ -221,7 +221,7 @@ while True:
                 plant.add_enem_zombie(ZOMBIE_SPAWNPOINTS[plant.plantID])
             
             # update and draw zombies
-            asyncio.run(enemy.update())
+            # asyncio.run(enemy.update())
             enemy.draw()
 
         # if plant is supposed to be shooting, shoot
@@ -234,10 +234,12 @@ while True:
         #     shot:Pea
         #     asyncio.run(shot.update())
         #     shot.draw()
-        plant.peashots.update()
+        plant.peashots.update() # cant use any asyncio sleeps for smooth animation
         plant.peashots.draw(screen)
 
         # draw plants
         plant.draw()
 
     pygame.display.flip() # pygame window mainloop
+
+    clock.tick(60)
