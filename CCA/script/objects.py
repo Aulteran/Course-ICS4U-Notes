@@ -9,6 +9,13 @@ import pygame, random, math
 PLANT_SPAWNPOINTS = [(60, 240), (60, 160), (60, 320)]
 ZOMBIE_SPAWNPOINTS = [(720, 260), (720, 180), (720, 340)]
 
+UPGRADES_MENU_PROMPT = (
+'''======|UPGRADES|======
+1) Stronger Plant (3 Strength Levels)
+2) Stronger Peashot
+3) Go Back (EXIT MENU)
+Please Select: ''')
+
 # player class
 class Player():
     def __init__(self, username='player', start_money=0, start_plants=1):
@@ -22,7 +29,7 @@ class Player():
         self.superzombies_killed = 0
         self.shots_made = 0
         self.max_strength_unlocked = 1
-        self.speed_booster_unlocked = 1
+        self.speed_booster_unlocked = 1 # 1 to 3 possible
     
     def add_plant(self, spawn_coords):
         if self.num_plants >= 5:
@@ -41,6 +48,9 @@ class Player():
     
     def show_balance(self):
         print(f"USER WALLET\nBalance: {self.wallet}")
+    
+    def upgrades_menu(self):
+        raise NotImplementedError
 
 # Peashooter class
 class Peashooter(pygame.sprite.Sprite):
@@ -67,7 +77,6 @@ class Peashooter(pygame.sprite.Sprite):
             spawnpoint = self.enemy_spawnpoint
         self.enemies.append(Zombie(spawnpoint[0], spawnpoint[1]+15, random.uniform(0.5, 2)))
         self.enemiesgrouped.add(self.enemies[-1])
-        print(f"Created Zombie {self.enemies[-1]}")
     
     def shoot(self, spawnpoint=0):
         if spawnpoint==0:
@@ -84,7 +93,7 @@ class Peashooter(pygame.sprite.Sprite):
         self.health -= 50
 
 class Pea(pygame.sprite.Sprite):
-    def __init__(self, x, y, angle = 0, speed = 2, strength = 40,  image_path = "CCA\\script\\assets\\images\\projectiles\\pea.png"):
+    def __init__(self, x, y, angle = 0, speed = 2, strength = 30,  image_path = "CCA\\script\\assets\\images\\projectiles\\pea.png"):
         pygame.sprite.Sprite.__init__(self)
         # Load, transform, and get rect of image
         self.image = pygame.image.load(image_path)
@@ -117,8 +126,9 @@ class Zombie(pygame.sprite.Sprite):
         self.rect.centery = y + 40
         self.speed = speed
         self.hp = 100
+        self.superzombie_status = False
         # 1/5 chance make superzombie
-        if random.randint(1,5) == 1:
+        if random.randint(1,10) == 1:
             print("SUPERSTRENGTH ZOMBIE HAS SPAWNED!")
             self.speed = 2.5 # 30% speed boost
             self.hp *= 2 # 2x hp
@@ -128,6 +138,7 @@ class Zombie(pygame.sprite.Sprite):
             self.rect = self.image.get_rect()
             self.rect.centerx = x
             self.rect.centery = y + 40
+            self.superzombie_status = True
         
     def hit_by_shot(self, damage_dealt):
         self.hp -= damage_dealt

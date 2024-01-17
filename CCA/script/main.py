@@ -106,16 +106,16 @@ while True:
                 main_player.show_balance()
             # add plants on KBM P
             if event.key == pygame.K_p:
-                if main_player.wallet >= 250:
+                print(f"A plant costs $250\nYour Balance: ${main_player.wallet}")
+                if main_player.wallet >= 250 and input("Are you sure?[Y/N]: ").upper()[0] == "Y":
                     main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
                     main_player.wallet -= 250
                     new_plant:Peashooter = main_player.plants[-1]
                     print(f"Purchased Plant {new_plant.plantID} for $250\nNew Balance: ${main_player.wallet}")
-                else: print("Not Enough Balance!")
+                else: print("Purchase Failed.")
             # Upgrades Menu on KBM U
             if event.key == pygame.K_u:
                 main_player.upgrades_menu()
-
 
     # add background image
     screen.blit(PVZ_LAWN_IMG, (0,0))
@@ -143,11 +143,16 @@ while True:
         for enemy in plant.enemies:
             enemy:Zombie
 
-            # if zombie health <0, remove zomb from sys.mem
+            # when zombie dies
             if enemy.hp <= 0:
+                # if zombie health <0, remove zomb from sys.mem
+                if enemy.superzombie_status:
+                    main_player.superzombies_killed += 1
                 enemy.kill()
                 plant.enemies.remove(enemy)
                 del enemy
+                # update player stats
+                main_player.zombies_killed += 1
                 # create replacement zombie
                 plant.add_enem_zombie(ZOMBIE_SPAWNPOINTS[plant.plantID])
                 main_player.wallet += 50
@@ -156,6 +161,7 @@ while True:
         # if plant is supposed to be shooting, shoot
         if plant.enemies:
             plant.shoot()
+            main_player.shots_made += 1
 
         # update and draw zombies
         plant.enemiesgrouped.update()
