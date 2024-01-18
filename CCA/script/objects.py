@@ -13,9 +13,9 @@ plants_vertically_ordered = [6, 4, 2, 1, 3, 5] # plant IDs top to bottom
 
 UPGRADES_MENU_PROMPT = (
 '''======|UPGRADES|======
-1) Stronger Plant (3 Strength Levels)
-2) Stronger Peashot (3 Strength Levels)
-3) Faster Peashot (3 Speed Levels)
+1) Stronger Plant (2 Strength Levels)
+2) Stronger Peashot (2 Strength Levels)
+3) Faster Peashot (2 Speed Levels)
 4) Go Back (EXIT MENU)
 Please Select: ''')
 
@@ -35,11 +35,10 @@ class Player():
         self.plants = []
         self.plantsgrouped = pygame.sprite.Group()
         self.shot_strength = 1 # levels 1 to 3
+        self.shot_speed = 1 # levels 1 to 3
         self.zombies_killed = 0
         self.superzombies_killed = 0
         self.shots_made = 0
-        self.max_strength_unlocked = 1
-        self.speed_booster_unlocked = 1 # 1 to 3 possible
     
     def add_plant(self, spawn_coords):
         if self.num_plants >= 6:
@@ -61,14 +60,53 @@ class Player():
     
     def upgrades_menu(self):
         upgrade_choice = numQuery(UPGRADES_MENU_PROMPT)
+        # upgrade plant strength
         if upgrade_choice == 1:
             print("Plants are numbered from top to bottom.")
             select_plant = input("Which plant would you like to upgrade?: ")
             plantID = plants_vertically_ordered[select_plant-1]
             plant_selected:Peashooter = self.plants[plantID]
-            if plant_selected.health == 100:
-                pass
-        raise NotImplementedError
+            if plant_selected.strengthLevel == 1:
+                cost = 200
+                if self.wallet >= 200:
+                    plant_selected.health = 200
+                    plant_selected.strengthLevel = 2
+            elif plant_selected.strengthLevel == 2:
+                cost = 400
+                if self.wallet >= cost:
+                    plant_selected.health = 300
+                    plant_selected.strengthLevel = 3
+            print(f"Plant strength upgraded to Lvl{plant_selected.strengthLevel} for ${cost}\nNew Balance: {self.wallet}")
+        # upgrade peashot strength
+        if upgrade_choice == 2:
+            if self.shot_strength == 1:
+                cost = 100
+                if self.wallet >= cost:
+                    self.shot_strength = 2
+                    self.wallet -= cost
+                else: print(f"Can't afford. Need ${cost}")
+            elif self.shot_strength == 2:
+                cost = 300
+                if self.wallet >= cost:
+                    self.shot_strength = 3
+                    self.wallet -= cost
+                else: print(f"Can't afford. Need ${cost}")
+            print(f"Peashots strength upgraded to Lvl{self.shot_strength} for ${cost}\nNew Balance: {self.wallet}")
+        # upgrade peashot speed
+        if upgrade_choice == 3:
+            if self.shot_speed == 1:
+                cost = 500
+                if self.wallet >= cost:
+                    self.shot_speed = 2
+                    self.wallet -= cost
+                else: print(f"Can't afford. Need ${cost}")
+            elif self.shot_speed == 2:
+                cost = 1000
+                if self.wallet >= cost:
+                    self.shot_speed = 3
+                    self.wallet -= cost
+                else: print(f"Can't afford. Need ${cost}")
+            print(f"Peashots speed upgraded to Lvl{self.shot_speed} for ${cost}\nNew Balance: {self.wallet}")
 
 # Peashooter class
 class Peashooter(pygame.sprite.Sprite):
@@ -88,6 +126,7 @@ class Peashooter(pygame.sprite.Sprite):
         self.shots = []
         self.shotsgrouped = pygame.sprite.Group()
         self.enemiesgrouped = pygame.sprite.Group()
+        self.strengthLevel = 1
         self.health = 100
     
     def add_enem_zombie(self, spawnpoint=0):
@@ -96,10 +135,10 @@ class Peashooter(pygame.sprite.Sprite):
         self.enemies.append(Zombie(spawnpoint[0], spawnpoint[1]+15, random.uniform(0.5, 2)))
         self.enemiesgrouped.add(self.enemies[-1])
     
-    def shoot(self, spawnpoint=0):
+    def shoot(self, player:Player, spawnpoint=0):
         if spawnpoint==0:
             spawnpoint = (self.rect.centerx, self.rect.centery)
-        self.shots.append(Pea(spawnpoint[0], spawnpoint[1], angle=0))
+        self.shots.append(Pea(spawnpoint[0], spawnpoint[1], player))
         self.shotsgrouped.add(self.shots[0])
         self.shooting = False
     
@@ -111,7 +150,7 @@ class Peashooter(pygame.sprite.Sprite):
         self.health -= 50
 
 class Pea(pygame.sprite.Sprite):
-    def __init__(self, x, y, angle = 0, speed = 2, strength = 30,  image_path = "CCA\\script\\assets\\images\\projectiles\\pea.png"):
+    def __init__(self, x, y, player:Player,  angle = 0,  image_path = "CCA\\script\\assets\\images\\projectiles\\pea.png"):
         pygame.sprite.Sprite.__init__(self)
         # Load, transform, and get rect of image
         self.image = pygame.image.load(image_path)
@@ -120,12 +159,23 @@ class Pea(pygame.sprite.Sprite):
         # Set init pos, speed, and angle
         self.rect.centerx = x + 30
         self.rect.centery = y + 20
-        self.speedconst = speed
         self.angle = angle
+
+        # set shot speed
+        if player.shot_speed == 1:
+            self.speedconst = 5
+        if player.shot_speed == 2:
+            self.speedconst = 8
+
         # Set speed based off angle, will prolly be 0 degrees for PvZ
         self.speedx = self.speedconst * math.cos(math.radians(self.angle))
         self.speedy = -(self.speedconst) * math.sin(math.radians(self.angle))
-        self.strength = strength
+
+        # set shot strength
+        if player.shot_strength == 1:
+            self.strength = 30
+        if player.shot_strength == 2:
+            self.strength = 50
     
     def update(self): 
         self.rect.x += self.speedx

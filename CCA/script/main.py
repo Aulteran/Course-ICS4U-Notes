@@ -90,6 +90,9 @@ dropshadow = DropShadow(30,30)
 ui_elements.add(dropshadow)
 
 clock = pygame.time.Clock() # FPS limiter required object
+pygame.mixer.init()
+pygame.mixer.music.load("CCA\script\\assets\music\grasswalk.mp3")
+pygame.mixer.music.play(-1)
 
 first_loop = True
 
@@ -122,7 +125,7 @@ while True:
             # Upgrades Menu on KBM U
             if event.key == pygame.K_u:
                 main_player.upgrades_menu()
-
+    
     # add background image
     screen.blit(PVZ_LAWN_IMG, (0,0))
     
@@ -166,7 +169,7 @@ while True:
 
         # if plant is supposed to be shooting, shoot
         if plant.enemies:
-            plant.shoot()
+            plant.shoot(main_player)
             main_player.shots_made += 1
 
         # update and draw zombies

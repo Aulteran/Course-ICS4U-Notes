@@ -23,13 +23,10 @@ key points to keep a note of
 |----|-----|
 |PLANT ITEMS|====|
 |New Plant|$250|
-|Strength 1|$200|
-|Strength 2|$400|
-|Strength 3|$1000|
+|Strength 2|$200|
+|Strength 3|$400|
 |PEA ITEMS|====|
-|Strength 1|$100|
-|Strength 2|$300|
-|Strength 3|$800|
-|Speed 1|$500|
-|Speed 2|$1000|
-|Speed 3|$1500|
+|Strength 2|$100|
+|Strength 3|$300|
+|Speed 2|$500|
+|Speed 3|$1000|
