@@ -45,9 +45,13 @@ HOVER_GRAY = (150, 150, 150)
 # background Plants vs Zombies Img filepath loaded in pygame
 PVZ_LAWN_IMG = pygame.image.load('CCA\script\\assets\\images\\Lawn.png')
 
+DATABASE_FILEPATH = 'CCA\\script\\database.csv'
+
 # save data to csv
-def save_stats(player):
-    raise NotImplementedError
+def save_stats(player:Player):
+    with open(DATABASE_FILEPATH, 'a') as database_file:
+        database_csv = csv.writer(database_file)
+        database_csv.writerow([player.name, player.wallet, player.num_plants, player.zombies_killed, player.superzombies_killed, player.shots_made, player.shot_strength, player.shot_speed])
 
 # detect collisions between sprites
 def collision_detector(player:Player):
@@ -97,13 +101,15 @@ pygame.mixer.music.play(-1)
 first_loop = True
 
 # Main game loop
+game_running = True
 while True:
 
     # if quit, kill script
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             pygame.quit()
-            sys.exit()
+            game_running = False
+            break
 
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
@@ -115,16 +121,24 @@ while True:
                 main_player.show_balance()
             # add plants on KBM P
             if event.key == pygame.K_p:
-                print(f"A plant costs $250\nYour Balance: ${main_player.wallet}")
-                if main_player.wallet >= 250:
-                    main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
-                    main_player.wallet -= 250
-                    new_plant:Peashooter = main_player.plants[-1]
-                    print(f"Purchased Plant {new_plant.plantID} for $250\nNew Balance: ${main_player.wallet}")
-                else: print("Purchase Failed.")
+                print(main_player.num_plants)
+                if main_player.num_plants <= 5: # 5 not 6 bc index at 0
+                    print(f"A plant costs $250\nYour Balance: ${main_player.wallet}")
+                    if main_player.wallet >= 250:
+                        main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
+                        main_player.wallet -= 250
+                        new_plant:Peashooter = main_player.plants[-1]
+                        print(f"Purchased Plant {new_plant.plantID} for $250\nNew Balance: ${main_player.wallet}")
+                    else: print("Purchase Failed.")
+                else: print("Cannot add additional plants! 6 Plants Maximum")
+
             # Upgrades Menu on KBM U
             if event.key == pygame.K_u:
                 main_player.upgrades_menu()
+        if not game_running:
+            break
+    if not game_running:
+            break
     
     # add background image
     screen.blit(PVZ_LAWN_IMG, (0,0))
@@ -183,5 +197,6 @@ while True:
     pygame.display.flip() # pygame window mainloop
     clock.tick(60) # FPS limiter set to 60
 
+save_stats(main_player)
 
-
+sys.exit()

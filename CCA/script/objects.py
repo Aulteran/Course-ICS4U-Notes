@@ -28,10 +28,10 @@ def numQuery(prompt):
 
 # player class
 class Player():
-    def __init__(self, username='player', start_money=0, start_plants=1):
+    def __init__(self, username='player', start_money=10000, start_plants=1):
         self.name = username
         self.wallet = start_money
-        self.num_plants = 0 # max 5 plants
+        self.num_plants = 0 # max 6 plants
         self.plants = []
         self.plantsgrouped = pygame.sprite.Group()
         self.shot_strength = 1 # levels 1 to 3
@@ -43,6 +43,7 @@ class Player():
     def add_plant(self, spawn_coords):
         if self.num_plants >= 6:
             print("Cannot add additional plants! 6 Plants Maximum")
+            return
         # create peashooter instance
         self.plants.append(Peashooter(spawn_coords[0], spawn_coords[1], self))
         self.num_plants += 1
@@ -145,6 +146,7 @@ class Peashooter(pygame.sprite.Sprite):
     def shot_hit_zombie(self, shot):
         shot:Pea
         shot.kill()
+        del shot
     
     def take_damage(self):
         self.health -= 50
@@ -163,18 +165,22 @@ class Pea(pygame.sprite.Sprite):
 
         # set shot speed
         if player.shot_speed == 1:
-            self.speedconst = 5
+            self.speedconst = 2
         if player.shot_speed == 2:
-            self.speedconst = 8
+            self.speedconst = 10
+        if player.shot_speed == 3:
+            self.speedconst = 15
 
         # Set speed based off angle, will prolly be 0 degrees for PvZ
         self.speedx = self.speedconst * math.cos(math.radians(self.angle))
         self.speedy = -(self.speedconst) * math.sin(math.radians(self.angle))
 
         # set shot strength
-        if player.shot_strength == 1:
+        if player.shot_speed == 1:
             self.strength = 30
         if player.shot_strength == 2:
+            self.strength = 40
+        if player.shot_strength == 3:
             self.strength = 50
     
     def update(self): 
