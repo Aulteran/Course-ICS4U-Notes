@@ -28,7 +28,7 @@ def numQuery(prompt):
 
 # player class
 class Player():
-    def __init__(self, username='player', start_money=10000, start_plants=1):
+    def __init__(self, username='player', start_money=0, start_plants=1):
         self.name = username
         self.wallet = start_money
         self.num_plants = 0 # max 6 plants
@@ -77,6 +77,9 @@ class Player():
                 if self.wallet >= cost:
                     plant_selected.health = 300
                     plant_selected.strengthLevel = 3
+            else:
+                print("Cannot upgrade more")
+                return
             print(f"Plant strength upgraded to Lvl{plant_selected.strengthLevel} for ${cost}\nNew Balance: {self.wallet}")
         # upgrade peashot strength
         if upgrade_choice == 2:
@@ -92,6 +95,9 @@ class Player():
                     self.shot_strength = 3
                     self.wallet -= cost
                 else: print(f"Can't afford. Need ${cost}")
+            else:
+                print("Cannot upgrade more")
+                return
             print(f"Peashots strength upgraded to Lvl{self.shot_strength} for ${cost}\nNew Balance: {self.wallet}")
         # upgrade peashot speed
         if upgrade_choice == 3:
@@ -107,6 +113,9 @@ class Player():
                     self.shot_speed = 3
                     self.wallet -= cost
                 else: print(f"Can't afford. Need ${cost}")
+            else:
+                print("Cannot upgrade more")
+                return
             print(f"Peashots speed upgraded to Lvl{self.shot_speed} for ${cost}\nNew Balance: {self.wallet}")
 
 # Peashooter class
@@ -141,7 +150,6 @@ class Peashooter(pygame.sprite.Sprite):
             spawnpoint = (self.rect.centerx, self.rect.centery)
         self.shots.append(Pea(spawnpoint[0], spawnpoint[1], player))
         self.shotsgrouped.add(self.shots[0])
-        self.shooting = False
     
     def shot_hit_zombie(self, shot):
         shot:Pea
@@ -162,30 +170,52 @@ class Pea(pygame.sprite.Sprite):
         self.rect.centerx = x + 30
         self.rect.centery = y + 20
         self.angle = angle
+        self.parentPlayer = player
 
         # set shot speed
         if player.shot_speed == 1:
             self.speedconst = 2
         if player.shot_speed == 2:
-            self.speedconst = 10
+            self.speedconst = 30
         if player.shot_speed == 3:
-            self.speedconst = 15
+            self.speedconst = 50
 
         # Set speed based off angle, will prolly be 0 degrees for PvZ
-        self.speedx = self.speedconst * math.cos(math.radians(self.angle))
+        self.speedx = self.speedconst #* math.cos(math.radians(self.angle))
         self.speedy = -(self.speedconst) * math.sin(math.radians(self.angle))
 
         # set shot strength
-        if player.shot_speed == 1:
+        if player.shot_strength == 1:
             self.strength = 30
         if player.shot_strength == 2:
             self.strength = 40
         if player.shot_strength == 3:
             self.strength = 50
     
-    def update(self): 
+    def update(self):
+        self.parentPlayer:Player
+        # set shot speed
+        if self.parentPlayer.shot_speed == 1:
+            self.speedconst = 2
+        if self.parentPlayer.shot_speed == 2:
+            self.speedconst = 3
+        if self.parentPlayer.shot_speed == 3:
+            self.speedconst = 4
+
+        # Set speed based off angle, will prolly be 0 degrees for PvZ
+        self.speedx = self.speedconst #* math.cos(math.radians(self.angle))
+        self.speedy = -(self.speedconst) * math.sin(math.radians(self.angle)) 
+
         self.rect.x += self.speedx
         self.rect.y += self.speedy
+
+        # set shot strength
+        if self.parentPlayer.shot_speed == 1:
+            self.strength = 30
+        if self.parentPlayer.shot_strength == 2:
+            self.strength = 40
+        if self.parentPlayer.shot_strength == 3:
+            self.strength = 50
 
 # zombie class
 class Zombie(pygame.sprite.Sprite):

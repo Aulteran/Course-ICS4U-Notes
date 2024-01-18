@@ -51,7 +51,7 @@ DATABASE_FILEPATH = 'CCA\\script\\database.csv'
 def save_stats(player:Player):
     with open(DATABASE_FILEPATH, 'a') as database_file:
         database_csv = csv.writer(database_file)
-        database_csv.writerow([player.name, player.wallet, player.num_plants, player.zombies_killed, player.superzombies_killed, player.shots_made, player.shot_strength, player.shot_speed])
+        database_csv.writerow([player.name, player.wallet, player.num_plants+1, player.zombies_killed, player.superzombies_killed, player.shots_made, player.shot_strength, player.shot_speed])
 
 # detect collisions between sprites
 def collision_detector(player:Player):
@@ -195,7 +195,7 @@ while True:
         plant.shotsgrouped.draw(screen)
 
     pygame.display.flip() # pygame window mainloop
-    clock.tick(60) # FPS limiter set to 60
+    clock.tick(144) # FPS limiter set to 144
 
 save_stats(main_player)
 
