@@ -84,8 +84,26 @@ def collision_detector(player:Player):
         obj.kill()
         del obj
 
+# # attempted to build login system so player can resume game later
+# not enough time, scrapped the idea.
+# # sign in/up stage
+# LOGIN_PAGE = (
+# '''Welcome to PvZ
+# 1. Login
+# 2. Sign Up
+# 3. Quit
+# Please Select: '''
+# )
+
+# start_page_option = numQuery(LOGIN_PAGE)
+# usnm = input("Enter username: ")
+# if start_page_option == 1:
+#     pass
+
+user = input("Enter username: ")
+
 # build init player object
-main_player = Player("Ault")
+main_player = Player(user)
 main_player.add_plant(PLANT_SPAWNPOINTS[main_player.num_plants])
 
 ui_elements = pygame.sprite.Group()
@@ -102,7 +120,7 @@ first_loop = True
 
 # Main game loop
 game_running = True
-while True:
+while game_running:
 
     # if quit, kill script
     for event in pygame.event.get():
