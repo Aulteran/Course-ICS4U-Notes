@@ -36,10 +36,10 @@ Instructions are attached at the top of all files.
 7. [Personal Passion Project - DS](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Assignment7_Personal_Passion_Project.ipynb) - Incomplete
 8. [Modeling a TV Remote](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Assignment8_TV_Remote.py)*
 ### Quizzes
-1. [Unit 3 - Object Oriented Programming](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Unit3_OOP_Quiz.py)*
+1. [Unit 3 - Object Oriented Programming](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Unit3_OOP_Quiz.py)*\n
 *Includes an auto grader upon submission.
 ### Culminating Assignment
-Create a computer game using PyGame. Ensure it saves data to a database. Use PANDAS to do a data analysis of the game.
-Click [here](https://github.com/Aulteran/Course-ICS4U-Notes/tree/main/CCA/script) for the game directory.
-I created a [readme file]() with the game instructions for how to play the game.
-The data analysis is included in a Jupyter Notebook in the game directory.
+Create a computer game using PyGame. Ensure it saves data to a database. Use PANDAS to do a data analysis of the game.\n
+Click [here](https://github.com/Aulteran/Course-ICS4U-Notes/tree/main/CCA/script) for the game directory.\n
+I created a [readme file]() with the game instructions for how to play the game.\n
+The data analysis is included in a Jupyter Notebook in the game directory.\n
