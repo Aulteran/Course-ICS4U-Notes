@@ -1,6 +1,6 @@
 # ICS4U: Computer Science
 not as easy as 3U was
-## Unit Overview
+## Course Overview
 Will be updated throughout the year.
 ### Unit 1 - Return to Python
 Picking up where 3U left off
@@ -19,8 +19,13 @@ Data Science with Functional Programming Paradigm through PANDAS
 An intro to classes and objects
 - Modeling Objects
 - Using Python Classes
+### Unit 4 - PyGame
+Make games lol. This uses OOP. There is only one note available for this unit.
+- Game window and loop
+- Sprites, images, movement, and objects
+- Game coded logic
 ## Submitted Work
-Instructions attached at top of each file.
+Instructions are attached at the top of all files.
 ### Assignments
 1. [Clickbait Generator](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Assignment1_Clickbait_Gen.py)
 2. [Caesar Cypher](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Assignment2_Caeser_Cypher.py)
@@ -29,6 +34,12 @@ Instructions attached at top of each file.
 5. [Pokemon - DS](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Assignment5_Pokemon_Assignment.ipynb)
 6. [Spotify Top Hits - DS](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Assignment6_SpotifyTop100.ipynb)
 7. [Personal Passion Project - DS](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Assignment7_Personal_Passion_Project.ipynb) - Incomplete
+8. [Modeling a TV Remote](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Assignment8_TV_Remote.py)*
 ### Quizzes
 1. [Unit 3 - Object Oriented Programming](https://github.com/Aulteran/Course-ICS4U-Notes/blob/main/Unit3_OOP_Quiz.py)*
-*Includes an autograder upon submission.
+*Includes an auto grader upon submission.
+### Culminating Assignment
+Create a computer game using PyGame. Ensure it saves data to a database. Use PANDAS to do a data analysis of the game.
+Click [here](https://github.com/Aulteran/Course-ICS4U-Notes/tree/main/CCA/script) for the game directory.
+I created a [readme file]() with the game instructions for how to play the game.
+The data analysis is included in a Jupyter Notebook in the game directory.
