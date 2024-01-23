@@ -43,9 +43,9 @@ GRAY = (200, 200, 200)
 HOVER_GRAY = (150, 150, 150)
 
 # background Plants vs Zombies Img filepath loaded in pygame
-PVZ_LAWN_IMG = pygame.image.load('CCA\script\\assets\\images\\Lawn.png')
+PVZ_LAWN_IMG = pygame.image.load('assets\\images\\Lawn.png')
 
-DATABASE_FILEPATH = 'CCA\\script\\database.csv'
+DATABASE_FILEPATH = 'database.csv'
 
 # save data to csv
 def save_stats(player:Player):
@@ -113,7 +113,7 @@ ui_elements.add(dropshadow)
 
 clock = pygame.time.Clock() # FPS limiter required object
 pygame.mixer.init()
-pygame.mixer.music.load("CCA\script\\assets\music\grasswalk.mp3")
+pygame.mixer.music.load("assets\music\grasswalk.mp3")
 pygame.mixer.music.play(-1)
 
 first_loop = True

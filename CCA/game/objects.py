@@ -72,14 +72,14 @@ class Player():
                 if self.wallet >= 200:
                     plant_selected.health = 200
                     plant_selected.strengthLevel = 2
-                    plant_selected.image = pygame.image.load('CCA\script\\assets\images\plants\lvl2.jpg')
+                    plant_selected.image = pygame.image.load('assets\images\plants\lvl2.jpg')
                     plant_selected.image = pygame.transform.scale(plant_selected.image, (100,100))
             elif plant_selected.strengthLevel == 2:
                 cost = 400
                 if self.wallet >= cost:
                     plant_selected.health = 300
                     plant_selected.strengthLevel = 3
-                    plant_selected.image = pygame.image.load('CCA\script\\assets\images\plants\sunflower-export.png')
+                    plant_selected.image = pygame.image.load('assets\images\plants\sunflower-export.png')
                     plant_selected.image = pygame.transform.scale(plant_selected.image, (100,100))
 
             else:
@@ -125,7 +125,7 @@ class Player():
 
 # Peashooter class
 class Peashooter(pygame.sprite.Sprite):
-    def __init__(self, x, y, player:Player, plantID = 0, image_path = "CCA\\script\\assets\\images\\plants\\peashooter.png"):
+    def __init__(self, x, y, player:Player, plantID = 0, image_path = "assets\\images\\plants\\peashooter.png"):
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(image_path)
         self.image = pygame.transform.scale(self.image, (60,100))
@@ -165,7 +165,7 @@ class Peashooter(pygame.sprite.Sprite):
         self.health -= 50
 
 class Pea(pygame.sprite.Sprite):
-    def __init__(self, x, y, player:Player,  angle = 0,  image_path = "CCA\\script\\assets\\images\\projectiles\\pea.png"):
+    def __init__(self, x, y, player:Player,  angle = 0,  image_path = "assets\\images\\projectiles\\pea.png"):
         pygame.sprite.Sprite.__init__(self)
         # Load, transform, and get rect of image
         self.image = pygame.image.load(image_path)
@@ -228,7 +228,7 @@ class Pea(pygame.sprite.Sprite):
 
 # zombie class
 class Zombie(pygame.sprite.Sprite):
-    def __init__(self, x, y, speed = 1, image_path = "CCA\\script\\assets\\images\\zombies\\normal.png"):
+    def __init__(self, x, y, speed = 1, image_path = "assets\\images\\zombies\\normal.png"):
         pygame.sprite.Sprite.__init__(self)
         # Load, transform, and get rect of image
         self.image = pygame.image.load(image_path)
@@ -245,7 +245,7 @@ class Zombie(pygame.sprite.Sprite):
             print("SUPERSTRENGTH ZOMBIE HAS SPAWNED!")
             self.speed = 2.5 # 30% speed boost
             self.hp *= 2 # 2x hp
-            self.image = pygame.image.load("CCA\\script\\assets\\images\\zombies\\superzombie.png")
+            self.image = pygame.image.load("assets\\images\\zombies\\superzombie.png")
             self.image.convert()
             self.image = pygame.transform.scale(self.image, (70,100))
             self.rect = self.image.get_rect()
@@ -264,7 +264,7 @@ class DropShadow(pygame.sprite.Sprite):
     def __init__(self, x, y):
         pygame.sprite.Sprite.__init__(self)
 
-        self.image = pygame.image.load("CCA\\script\\assets\\images\\black.jpg")
+        self.image = pygame.image.load("assets\\images\\black.jpg")
         self.image = pygame.transform.scale(self.image, (750,525))
         self.image.set_alpha(100)
         self.rect = self.image.get_rect()
