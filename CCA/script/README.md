@@ -4,7 +4,10 @@ key points to keep a note of
 - 10% chance you encounter a superzombie
 - superzombie has x2 health and 30% speed boost
 - you get $50 for killing a zombie
-- can buy max of 5 additional plants
+- can buy max of 5 additional plants(for a total of 6)
+- you can't upgrade plant strength until you buy all plants.
+- you start with $1000 so you can buy all the plants you want
+- (game gets fun when you have max plants and max upgrades)
 
 ## Controls
 | KEYBIND | ACTION |
@@ -15,7 +18,7 @@ key points to keep a note of
 
 ## Upgrades available
 - Can buy new plant (up to 6 plants)
-- Can increase plant strength (up to Lvl3)
+- Can increase plant strength (up to Lvl3)(cannot buy until all plants unlocked)
 - Can increase pea(bullt) strength (up to Lvl3)
 - Can increase pea(bullet) speed (up to Lvl3)
 ### Prices

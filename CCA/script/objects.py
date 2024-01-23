@@ -28,7 +28,7 @@ def numQuery(prompt):
 
 # player class
 class Player():
-    def __init__(self, username='player', start_money=0, start_plants=1):
+    def __init__(self, username='player', start_money=1000, start_plants=1):
         self.name = username
         self.wallet = start_money
         self.num_plants = 0 # max 6 plants
@@ -64,19 +64,24 @@ class Player():
         # upgrade plant strength
         if upgrade_choice == 1:
             print("Plants are numbered from top to bottom.")
-            select_plant = input("Which plant would you like to upgrade?: ")
+            select_plant = numQuery("Which plant would you like to upgrade?: ")
             plantID = plants_vertically_ordered[select_plant-1]
-            plant_selected:Peashooter = self.plants[plantID]
+            plant_selected:Peashooter = self.plants[plantID-1]
             if plant_selected.strengthLevel == 1:
                 cost = 200
                 if self.wallet >= 200:
                     plant_selected.health = 200
                     plant_selected.strengthLevel = 2
+                    plant_selected.image = pygame.image.load('CCA\script\\assets\images\plants\lvl2.jpg')
+                    plant_selected.image = pygame.transform.scale(plant_selected.image, (100,100))
             elif plant_selected.strengthLevel == 2:
                 cost = 400
                 if self.wallet >= cost:
                     plant_selected.health = 300
                     plant_selected.strengthLevel = 3
+                    plant_selected.image = pygame.image.load('CCA\script\\assets\images\plants\sunflower-export.png')
+                    plant_selected.image = pygame.transform.scale(plant_selected.image, (100,100))
+
             else:
                 print("Cannot upgrade more")
                 return
@@ -138,7 +143,7 @@ class Peashooter(pygame.sprite.Sprite):
         self.enemiesgrouped = pygame.sprite.Group()
         self.strengthLevel = 1
         self.health = 100
-    
+
     def add_enem_zombie(self, spawnpoint=0):
         if spawnpoint == 0:
             spawnpoint = self.enemy_spawnpoint
@@ -189,8 +194,10 @@ class Pea(pygame.sprite.Sprite):
             self.strength = 30
         if player.shot_strength == 2:
             self.strength = 40
+            self.image = pygame.transform.scale(self.image, (40,40))
         if player.shot_strength == 3:
             self.strength = 50
+            self.image = pygame.transform.scale(self.image, (50,50))
     
     def update(self):
         self.parentPlayer:Player
@@ -214,8 +221,10 @@ class Pea(pygame.sprite.Sprite):
             self.strength = 30
         if self.parentPlayer.shot_strength == 2:
             self.strength = 40
+            self.image = pygame.transform.scale(self.image, (40,40))
         if self.parentPlayer.shot_strength == 3:
             self.strength = 50
+            self.image = pygame.transform.scale(self.image, (50,50))
 
 # zombie class
 class Zombie(pygame.sprite.Sprite):
