@@ -55,7 +55,7 @@ def one_test():
         assert Beth.denied == 0
         assert Beth.user_id == ('Beth', 'Beth@gmail.com')
         assert Beth.account_type == 'WizCoin Plus'
-        assert issubclass(BankAcountPlus,BankAcountPlus)
+        assert issubclass(BankAcountPlus,BankAccount)
 
         print ('success')
     except (AssertionError):
